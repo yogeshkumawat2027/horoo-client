@@ -70,7 +70,7 @@ export default function Footer() {
           <div className="flex-1 lg:max-w-sm">
             <div className="mb-6">
               <Image
-                src="/logo/LogoOfHoroo.png"
+                src="/logo/LogoOfHoroo.jpg"
                 alt="Horoo Logo"
                 width={120}
                 height={40}
