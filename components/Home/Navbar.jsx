@@ -66,7 +66,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center space-x-4">
               <div className="relative w-14 h-14">
                 <Image
-                  src="/logo/logoOfHoroo.jpg"
+                  src="/logo/LogoOfHoroo.jpg"
                   alt="Horoo Logo"
                   fill
                   className="object-cover"
