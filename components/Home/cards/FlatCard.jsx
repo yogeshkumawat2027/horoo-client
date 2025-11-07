@@ -107,7 +107,7 @@ export default function FlatCard({
         <div className="mb-4">
           <div className="flex items-center gap-3">
             {/* Horoo Price (with strike-through) */}
-            {horooPrice && horooPrice !== ownerPrice && (
+            {ownerPrice && horooPrice && horooPrice > ownerPrice && (
               <div className="flex items-center text-gray-500">
                 <FaRupeeSign className="text-xs" />
                 <span className="text-sm line-through">
@@ -120,7 +120,7 @@ export default function FlatCard({
             <div className="flex items-center text-orange-600">
               <FaRupeeSign className="text-sm font-bold" />
               <span className="text-xl font-bold">
-                {ownerPrice?.toLocaleString() || 'Price on request'}
+                  {(ownerPrice || horooPrice)?.toLocaleString() || 'Price on request'}
               </span>
               <span className="text-sm text-gray-500 ml-1">/month</span>
             </div>
