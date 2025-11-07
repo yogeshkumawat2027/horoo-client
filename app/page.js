@@ -2,10 +2,10 @@
 
 import CommercialSection from "@/components/Home/CommercialSection";
 import FlatSection from "@/components/Home/FlatSection";
-import Footer from "@/components/Home/Footer";
+
 import HeroLG from "@/components/Home/HeroLG";
 import HostelSection from "@/components/Home/HostelSection";
-import Navbar from "@/components/Home/Navbar";
+
 import RoomSection from "@/components/Home/RoomSection";
 import FloatingCallButton from "@/components/Home/FloatingCallButton";
 import Image from "next/image";
@@ -23,15 +23,12 @@ export default function Home() {
 
   return (
   <>
-  <Navbar />
+  
   <HeroLG />
   <RoomSection />
   <FlatSection />
   <HostelSection />
   <CommercialSection />
-  <Footer />
-  {/* <FloatingCallButton /> */}
-  <ProductionPopup open={showPopup} onClose={() => setShowPopup(false)} />
   </>
   );
 }

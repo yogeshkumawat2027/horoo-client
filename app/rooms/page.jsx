@@ -314,14 +314,14 @@ export default function RoomPage() {
                 {hasActiveFilters ? 'Filtered results' : 'All available rooms'}
               </p>
             </div>
-            <button
+            {/* <button
               onClick={fetchRooms}
               disabled={loading}
               className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-lg hover:border-orange-500 hover:text-orange-600 transition-all text-sm font-semibold shadow-md hover:shadow-lg disabled:opacity-50"
             >
               <FaSyncAlt className={loading ? 'animate-spin' : ''} />
               Refresh
-            </button>
+            </button> */}
           </div>
 
           {/* Loading State */}

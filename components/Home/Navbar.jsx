@@ -49,12 +49,12 @@ export default function Navbar() {
   };
 
   const propertyTypes = [
-    { name: 'Rooms', icon: FaBed, href: '/properties/rooms' },
-    { name: 'Flats', icon: FaBuilding, href: '/properties/flats' },
-    { name: 'Hostels', icon: FaUserFriends, href: '/properties/hostels' },
-    { name: 'House', icon: FaHome, href: '/properties/house' },
-    { name: 'Commercial', icon: FaWarehouse, href: '/properties/commercial' },
-    { name: 'Hotel Rooms', icon: FaHotel, href: '/properties/hotels' }
+    { name: 'Rooms', icon: FaBed, href: '/rooms' },
+    { name: 'Flats', icon: FaBuilding, href: '/flats' },
+    { name: 'Hostels', icon: FaUserFriends, href: '/hostels' },
+    { name: 'House', icon: FaHome, href: '/house' },
+    { name: 'Commercial', icon: FaWarehouse, href: '/commercial' },
+    { name: 'Hotel Rooms', icon: FaHotel, href: '/hotels' }
   ];
 
   return (
@@ -155,7 +155,7 @@ export default function Navbar() {
             >
               <FaPhoneAlt className="w-3 h-3 animate-pulse" />
               <div className="flex flex-col leading-tight">
-                <span className="text-xs font-semibold">Call Now</span>
+                <span className="text-xs font-semibold">Book Now</span>
                 <span className="text-xs opacity-90">9166260477</span>
               </div>
             </a>
