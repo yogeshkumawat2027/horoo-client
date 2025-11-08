@@ -1,23 +1,23 @@
 import Link from 'next/link';
-import { FaMapMarkerAlt, FaUsers, FaWarehouse, FaRupeeSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUsers, FaHome, FaRupeeSign } from 'react-icons/fa';
 
-export default function CommercialCard({
+export default function HouseCard({
   horooId,
   horooName,
   state,
   city,
   area,
   pincode,
-  commercialType = [],
+  houseType = [],
   availableFor = [],
   ownerPrice,
   horooPrice,
   mainImage,
-  commercialSize
+  roomSize
 }) {
-  // Format commercial types for display
-  const formatCommercialTypes = (types) => {
-    if (!types || types.length === 0) return 'Commercial Available';
+  // Format house types for display
+  const formatHouseTypes = (types) => {
+    if (!types || types.length === 0) return 'House Available';
     return types.join(', ');
   };
 
@@ -44,14 +44,14 @@ export default function CommercialCard({
 
   return (
     <Link 
-      href={`/commercial/${horooId}`}
+      href={`/house/${horooId}`}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
         <img
-          src={mainImage || 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
+          src={mainImage || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
           alt={horooName}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
@@ -77,41 +77,30 @@ export default function CommercialCard({
           </div>
         </div>
 
-        {/* Commercial Details */}
+        {/* House Details */}
         <div className="space-y-2 mb-4">
-          {commercialType && commercialType.length > 0 && (
+          {houseType && houseType.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Type:</span>
+              <span className="text-xs font-medium text-gray-500">House Type:</span>
               <span className="text-xs text-gray-700 bg-blue-100 px-2 py-1 rounded">
-                {formatCommercialTypes(commercialType)}
+                {formatHouseTypes(houseType)}
               </span>
             </div>
           )}
-
-          {availableFor && availableFor.length > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Available For:</span>
-              <span className="text-xs text-gray-700 bg-green-100 px-2 py-1 rounded">
-                {formatAvailableFor(availableFor)}
-              </span>
-            </div>
-          )}
-
-          {commercialSize && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Size:</span>
-              <span className="text-xs text-gray-700 bg-purple-100 px-2 py-1 rounded">
-                {commercialSize}
-              </span>
-            </div>
-          )}
+          
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-500">Available For:</span>
+            <span className="text-xs text-gray-700 bg-green-100 px-2 py-1 rounded">
+              {formatAvailableFor(availableFor)}
+            </span>
+          </div>
         </div>
 
         {/* Pricing Section */}
         <div className="mb-4">
           <div className="flex items-center gap-3">
             {/* Horoo Price (with strike-through) */}
-            {horooPrice && horooPrice !== ownerPrice && (
+            {ownerPrice && horooPrice && horooPrice > ownerPrice && (
               <div className="flex items-center text-gray-500">
                 <FaRupeeSign className="text-xs" />
                 <span className="text-sm line-through">
@@ -124,7 +113,7 @@ export default function CommercialCard({
             <div className="flex items-center text-orange-600">
               <FaRupeeSign className="text-sm font-bold" />
               <span className="text-xl font-bold">
-                {ownerPrice?.toLocaleString() || 'Price on request'}
+                  {(ownerPrice || horooPrice)?.toLocaleString() || 'Price on request'}
               </span>
               <span className="text-sm text-gray-500 ml-1">/month</span>
             </div>
@@ -142,7 +131,7 @@ export default function CommercialCard({
 
         {/* Explore Button */}
         {/* <Link 
-          href={`/commercial/${horooId}`}
+          href={`/houses/${horooId}`}
           className="block w-full"
         >
           <button className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:shadow-md">
