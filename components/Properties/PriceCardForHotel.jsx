@@ -25,7 +25,7 @@ export default function PriceCard({
 
       {/* Pricing */}
       <div className="mb-6">
-        <h3 className="text-xs md:text-sm text-gray-500 mb-3 font-medium">Monthly Rent</h3>
+        <h3 className="text-xs md:text-sm text-gray-500 mb-3 font-medium">Rent per Day</h3>
         
         {/* Both Prices in Same Line */}
         <div className="flex items-center gap-3 flex-wrap mb-2">

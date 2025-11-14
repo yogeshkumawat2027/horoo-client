@@ -6,7 +6,7 @@ import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
 import PriceCard from '@/components/Properties/PriceCard';
 import PropertyLocation from '@/components/Properties/PropertyLocation';
-import RoomDetails from '@/components/Properties/RoomDetails';
+import CommercialDetails from '@/components/Properties/CommercialDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
 
@@ -14,7 +14,7 @@ const API = 'http://localhost:5000/api';
 
 export default function Page() {
   const params = useParams();
-  const [room, setRoom] = useState(null);
+  const [commercial, setCommercial] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Popup visibility states
@@ -25,15 +25,15 @@ export default function Page() {
 
   useEffect(() => {
     if (params.id) {
-      fetchRoomDetails();
+      fetchCommercialDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   // Check if button was disabled for this horooId
   useEffect(() => {
-    if (room?.horooId) {
-      const disabledUntil = localStorage.getItem(`request_disabled_${room.horooId}`);
+    if (commercial?.horooId) {
+      const disabledUntil = localStorage.getItem(`request_disabled_${commercial.horooId}`);
       if (disabledUntil) {
         const now = Date.now();
         const remaining = parseInt(disabledUntil) - now;
@@ -42,7 +42,6 @@ export default function Page() {
           setIsButtonDisabled(true);
           setTimeLeft(Math.ceil(remaining / 1000));
           
-          // Update timer every second
           const interval = setInterval(() => {
             const currentRemaining = parseInt(disabledUntil) - Date.now();
             if (currentRemaining > 0) {
@@ -50,30 +49,30 @@ export default function Page() {
             } else {
               setIsButtonDisabled(false);
               setTimeLeft(0);
-              localStorage.removeItem(`request_disabled_${room.horooId}`);
+              localStorage.removeItem(`request_disabled_${commercial.horooId}`);
               clearInterval(interval);
             }
           }, 1000);
           
           return () => clearInterval(interval);
         } else {
-          localStorage.removeItem(`request_disabled_${room.horooId}`);
+          localStorage.removeItem(`request_disabled_${commercial.horooId}`);
         }
       }
     }
-  }, [room?.horooId]);
+  }, [commercial?.horooId]);
 
-  const fetchRoomDetails = async () => {
+  const fetchCommercialDetails = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/room/${params.id}`);
+      const res = await fetch(`${API}/commercial/${params.id}`);
       const data = await res.json();
       
       if (data.success) {
-        setRoom(data.room);
+        setCommercial(data.commercial);
       }
     } catch (error) {
-      console.error('Error fetching room details:', error);
+      console.error('Error fetching commercial details:', error);
     } finally {
       setLoading(false);
     }
@@ -84,25 +83,25 @@ export default function Page() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">Loading room details...</p>
+          <p className="mt-4 text-gray-600 font-medium">Loading commercial details...</p>
         </div>
       </div>
     );
   }
 
-  if (!room) {
+  if (!commercial) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <FaBed className="text-6xl text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Room Not Found</h2>
-          <p className="text-gray-600 mb-6">The room you're looking for doesn't exist.</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Commercial Not Found</h2>
+          <p className="text-gray-600 mb-6">The commercial you're looking for doesn't exist.</p>
           <Link 
-            href="/rooms"
+            href="/commercials"
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all font-semibold"
           >
             <FaArrowLeft />
-            Back to Rooms
+            Back to Commercials
           </Link>
         </div>
       </div>
@@ -110,7 +109,7 @@ export default function Page() {
   }
 
   // Prepare images array
-  const allImages = [room.mainImage, ...(room.otherImages || [])].filter(Boolean);
+  const allImages = [commercial.mainImage, ...(commercial.otherImages || [])].filter(Boolean);
 
   const handleBookingRequest = () => {
     setOpenFormPopup(true);
@@ -120,12 +119,10 @@ export default function Page() {
     setOpenThanksPopup(true);
     setIsButtonDisabled(true);
     
-    // Disable button for 2 minutes (120000 ms) for this specific horooId
     const disabledUntil = Date.now() + 120000;
-    localStorage.setItem(`request_disabled_${room.horooId}`, disabledUntil.toString());
+    localStorage.setItem(`request_disabled_${commercial.horooId}`, disabledUntil.toString());
     setTimeLeft(120);
     
-    // Update timer every second
     const interval = setInterval(() => {
       const remaining = disabledUntil - Date.now();
       if (remaining > 0) {
@@ -133,7 +130,7 @@ export default function Page() {
       } else {
         setIsButtonDisabled(false);
         setTimeLeft(0);
-        localStorage.removeItem(`request_disabled_${room.horooId}`);
+        localStorage.removeItem(`request_disabled_${commercial.horooId}`);
         clearInterval(interval);
       }
     }, 1000);
@@ -145,11 +142,11 @@ export default function Page() {
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 py-2">
           <Link 
-            href="/rooms"
+            href="/commercials"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
           >
             <FaArrowLeft />
-            Back to Rooms
+            Back to Commercials
           </Link>
         </div>
       </div>
@@ -163,22 +160,22 @@ export default function Page() {
 
             {/* Property Location */}
             <PropertyLocation
-              propertyName={room.horooName || room.propertyName}
-              area={room.area?.name}
-              city={room.city?.name}
-              state={room.state?.name}
-              pincode={room.pincode}
-              nearbyAreas={room.nearbyAreas}
+              propertyName={commercial.horooName || commercial.propertyName}
+              area={commercial.area?.name}
+              city={commercial.city?.name}
+              state={commercial.state?.name}
+              pincode={commercial.pincode}
+              nearbyAreas={commercial.nearbyAreas}
             />
 
             {/* Price Card - Show on mobile only */}
             <div className="lg:hidden">
               <PriceCard
-                horooId={room.horooId}
-                ownerPrice={room.ownerPrice}
-                horooPrice={room.horooPrice}
-                pricePlans={room.pricePlans}
-                availability={room.availability}
+                horooId={commercial.horooId}
+                ownerPrice={commercial.ownerPrice}
+                horooPrice={commercial.horooPrice}
+                pricePlans={commercial.pricePlans}
+                availability={commercial.availability}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
@@ -186,24 +183,24 @@ export default function Page() {
             </div>
 
             {/* Property Details */}
-            <RoomDetails
-              roomType={room.roomType}
-              availableFor={room.availableFor}
-              roomSize={room.roomSize}
-              facilities={room.facilities}
-              description={room.description}
-              youtubeLink={room.youtubeLink}
+            <CommercialDetails
+              commercialType={commercial.commercialType}
+              availableFor={commercial.availableFor}
+              commercialSize={commercial.commercialSize}
+              facilities={commercial.facilities}
+              description={commercial.description}
+              youtubeLink={commercial.youtubeLink}
             />
           </div>
 
           {/* Right Column - Pricing & Booking (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
             <PriceCard
-              horooId={room.horooId}
-              ownerPrice={room.ownerPrice}
-              horooPrice={room.horooPrice}
-              pricePlans={room.pricePlans}
-              availability={room.availability}
+              horooId={commercial.horooId}
+              ownerPrice={commercial.ownerPrice}
+              horooPrice={commercial.horooPrice}
+              pricePlans={commercial.pricePlans}
+              availability={commercial.availability}
               onBookingRequest={handleBookingRequest}
               isButtonDisabled={isButtonDisabled}
               timeLeft={timeLeft}
@@ -216,7 +213,7 @@ export default function Page() {
       <RequestFormPopup
         open={openFormPopup}
         setOpen={setOpenFormPopup}
-        horooId={room.horooId}
+        horooId={commercial.horooId}
         onSuccess={handleRequestSuccess}
       />
 

@@ -53,7 +53,7 @@ export default function Navbar() {
     { name: 'Flats', icon: FaBuilding, href: '/flats' },
     { name: 'Hostels', icon: FaUserFriends, href: '/hostels' },
     { name: 'House', icon: FaHome, href: '/house' },
-    { name: 'Commercial', icon: FaWarehouse, href: '/commercial' },
+    { name: 'Commercials', icon: FaWarehouse, href: '/commercials' },
     { name: 'Hotel Rooms', icon: FaHotel, href: '/hotels' }
   ];
 

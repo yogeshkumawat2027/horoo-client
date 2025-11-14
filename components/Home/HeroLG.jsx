@@ -44,9 +44,9 @@ export default function HeroLG() {
       color: 'bg-orange-500 hover:bg-orange-600'
     },
     {
-      name: 'Commercial',
+      name: 'Commercials',
       icon: FaWarehouse,
-      href: '/commercial',
+      href: '/commercials',
       color: 'bg-orange-500 hover:bg-orange-600'
     }
   ];

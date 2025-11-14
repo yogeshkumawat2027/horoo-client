@@ -7,6 +7,8 @@ import ShowImages from '@/components/Properties/ShowImages';
 import PriceCard from '@/components/Properties/PriceCard';
 import PropertyLocation from '@/components/Properties/PropertyLocation';
 import FlatDetails from '@/components/Properties/FlatDetails';
+import RequestFormPopup from "@/components/Request/RequestFormPopup";
+import ThankYouPopup from "@/components/Request/ThankYouPopup";
 
 const API = 'https://horoo-backend-latest.onrender.com/api';
 
@@ -15,12 +17,50 @@ export default function Page() {
   const [flat, setFlat] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Popup visibility states
+  const [openFormPopup, setOpenFormPopup] = useState(false);
+  const [openThanksPopup, setOpenThanksPopup] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+
   useEffect(() => {
     if (params.id) {
       fetchFlatDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
+
+  // Check if button was disabled for this horooId
+  useEffect(() => {
+    if (flat?.horooId) {
+      const disabledUntil = localStorage.getItem(`request_disabled_${flat.horooId}`);
+      if (disabledUntil) {
+        const now = Date.now();
+        const remaining = parseInt(disabledUntil) - now;
+        
+        if (remaining > 0) {
+          setIsButtonDisabled(true);
+          setTimeLeft(Math.ceil(remaining / 1000));
+          
+          const interval = setInterval(() => {
+            const currentRemaining = parseInt(disabledUntil) - Date.now();
+            if (currentRemaining > 0) {
+              setTimeLeft(Math.ceil(currentRemaining / 1000));
+            } else {
+              setIsButtonDisabled(false);
+              setTimeLeft(0);
+              localStorage.removeItem(`request_disabled_${flat.horooId}`);
+              clearInterval(interval);
+            }
+          }, 1000);
+          
+          return () => clearInterval(interval);
+        } else {
+          localStorage.removeItem(`request_disabled_${flat.horooId}`);
+        }
+      }
+    }
+  }, [flat?.horooId]);
 
   const fetchFlatDetails = async () => {
     setLoading(true);
@@ -72,8 +112,28 @@ export default function Page() {
   const allImages = [flat.mainImage, ...(flat.otherImages || [])].filter(Boolean);
 
   const handleBookingRequest = () => {
-    // Handle booking request logic here
-    alert('Booking request functionality will be implemented');
+    setOpenFormPopup(true);
+  };
+
+  const handleRequestSuccess = () => {
+    setOpenThanksPopup(true);
+    setIsButtonDisabled(true);
+    
+    const disabledUntil = Date.now() + 120000;
+    localStorage.setItem(`request_disabled_${flat.horooId}`, disabledUntil.toString());
+    setTimeLeft(120);
+    
+    const interval = setInterval(() => {
+      const remaining = disabledUntil - Date.now();
+      if (remaining > 0) {
+        setTimeLeft(Math.ceil(remaining / 1000));
+      } else {
+        setIsButtonDisabled(false);
+        setTimeLeft(0);
+        localStorage.removeItem(`request_disabled_${flat.horooId}`);
+        clearInterval(interval);
+      }
+    }, 1000);
   };
 
   return (
@@ -117,6 +177,8 @@ export default function Page() {
                 pricePlans={flat.pricePlans}
                 availability={flat.availability}
                 onBookingRequest={handleBookingRequest}
+                isButtonDisabled={isButtonDisabled}
+                timeLeft={timeLeft}
               />
             </div>
 
@@ -140,10 +202,26 @@ export default function Page() {
               pricePlans={flat.pricePlans}
               availability={flat.availability}
               onBookingRequest={handleBookingRequest}
+              isButtonDisabled={isButtonDisabled}
+              timeLeft={timeLeft}
             />
           </div>
         </div>
       </div>
+
+      {/* FORM POPUP */}
+      <RequestFormPopup
+        open={openFormPopup}
+        setOpen={setOpenFormPopup}
+        horooId={flat.horooId}
+        onSuccess={handleRequestSuccess}
+      />
+
+      {/* THANK YOU POPUP */}
+      <ThankYouPopup
+        open={openThanksPopup}
+        setOpen={setOpenThanksPopup}
+      />
     </div>
   );
 }

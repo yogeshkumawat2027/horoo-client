@@ -1,23 +1,22 @@
 import Link from 'next/link';
-import { FaMapMarkerAlt, FaUsers, FaWarehouse, FaRupeeSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUsers, FaBed, FaRupeeSign } from 'react-icons/fa';
 
-export default function CommercialCard({
+export default function HotelCard({
   horooId,
   horooName,
   state,
   city,
   area,
   pincode,
-  commercialType = [],
+  roomType = [],
   availableFor = [],
   ownerPrice,
   horooPrice,
-  mainImage,
-  commercialSize
+  mainImage
 }) {
-  // Format commercial types for display
-  const formatCommercialTypes = (types) => {
-    if (!types || types.length === 0) return 'Commercial Available';
+  // Format room types for display
+  const formatRoomTypes = (types) => {
+    if (!types || types.length === 0) return 'Hotel Available';
     return types.join(', ');
   };
 
@@ -44,74 +43,63 @@ export default function CommercialCard({
 
   return (
     <Link 
-      href={`/commercials/${horooId}`}
+      href={`/hotels/${horooId}`}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">
       {/* Image Section */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-36 md:h-48 overflow-hidden">
         <img
-          src={mainImage || 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
+          src={mainImage || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
           alt={horooName}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
 
       {/* Content Section */}
-      <div className="p-5">
+      <div className="p-3 md:p-5">
         {/* Property Name */}
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">
+        <h3 className="text-sm md:text-lg font-bold text-gray-800 mb-1 md:mb-2 truncate group-hover:text-orange-600 transition-colors">
           {horooName}
         </h3>
 
         {/* Location */}
-        <div className="flex items-start gap-2 mb-3">
-          <FaMapMarkerAlt className="text-orange-500 mt-1 flex-shrink-0" />
-          <div className="text-sm text-gray-600 leading-relaxed">
+        <div className="flex items-start gap-1 md:gap-2 mb-2 md:mb-3">
+          <FaMapMarkerAlt className="text-orange-500 mt-1 flex-shrink-0 text-xs md:text-sm" />
+          <div className="text-xs md:text-sm text-gray-600 leading-relaxed">
             {locationLine1 && (
-              <div className="font-medium">{locationLine1}</div>
+              <div className="font-medium line-clamp-1">{locationLine1}</div>
             )}
             {locationLine2 && (
-              <div className="text-xs text-gray-500">{locationLine2}</div>
+              <div className="text-[10px] md:text-xs text-gray-500">{locationLine2}</div>
             )}
           </div>
         </div>
 
-        {/* Commercial Details */}
-        <div className="space-y-2 mb-4">
-          {commercialType && commercialType.length > 0 && (
+        {/* Hotel Details */}
+        <div className="space-y-1 md:space-y-2 mb-2 md:mb-4">
+          {roomType && roomType.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Type:</span>
-              <span className="text-xs text-gray-700 bg-blue-100 px-2 py-1 rounded">
-                {formatCommercialTypes(commercialType)}
+              <span className="text-xs font-medium text-gray-500">Room Type:</span>
+              <span className="text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded">
+                {formatRoomTypes(roomType)}
               </span>
             </div>
           )}
-
-          {availableFor && availableFor.length > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Available For:</span>
-              <span className="text-xs text-gray-700 bg-green-100 px-2 py-1 rounded">
-                {formatAvailableFor(availableFor)}
-              </span>
-            </div>
-          )}
-
-          {commercialSize && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Size:</span>
-              <span className="text-xs text-gray-700 bg-purple-100 px-2 py-1 rounded">
-                {commercialSize}
-              </span>
-            </div>
-          )}
+          
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-500">Available For:</span>
+            <span className="text-xs text-gray-700 bg-green-100 px-2 py-1 rounded">
+              {formatAvailableFor(availableFor)}
+            </span>
+          </div>
         </div>
 
         {/* Pricing Section */}
         <div className="mb-4">
           <div className="flex items-center gap-3">
-            {/* Horoo Price (with strike-through) */}
-            {horooPrice && horooPrice !== ownerPrice && (
+            {/* Original Price (strike-through if discounted) */}
+            {ownerPrice && horooPrice && horooPrice > ownerPrice && (
               <div className="flex items-center text-gray-500">
                 <FaRupeeSign className="text-xs" />
                 <span className="text-sm line-through">
@@ -120,18 +108,18 @@ export default function CommercialCard({
               </div>
             )}
             
-            {/* Owner Price (main price) */}
+            {/* Main Display Price */}
             <div className="flex items-center text-orange-600">
               <FaRupeeSign className="text-sm font-bold" />
               <span className="text-xl font-bold">
-                {ownerPrice?.toLocaleString() || 'Price on request'}
+                {(ownerPrice || horooPrice)?.toLocaleString() || 'Price on request'}
               </span>
-              <span className="text-sm text-gray-500 ml-1">/month</span>
+              <span className="text-sm text-gray-500 ml-1">/day</span>
             </div>
           </div>
           
           {/* Discount Badge */}
-          {horooPrice && horooPrice !== ownerPrice && (
+          {ownerPrice && horooPrice && horooPrice > ownerPrice && (
             <div className="mt-1">
               <span className="inline-block bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
                 Save ₹{(horooPrice - ownerPrice).toLocaleString()}
@@ -142,7 +130,7 @@ export default function CommercialCard({
 
         {/* Explore Button */}
         {/* <Link 
-          href={`/commercial/${horooId}`}
+          href={`/Hotels/${horooId}`}
           className="block w-full"
         >
           <button className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:shadow-md">

@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fa';
 
 export default function PropertyDetails({ 
-  houseType = [],
+  roomType = [],
   availableFor = [],
   roomSize,
   facilities = [],
@@ -27,18 +27,18 @@ export default function PropertyDetails({
 
   return (
     <div className="space-y-6">
-      {/* house Details */}
+      {/* Hotel Details */}
       <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
-        {/* house Type, Available For, House Size - All in one line */}
+        {/* Hotel Type, Available For, Room Size - All in one line */}
         <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-2">
-          {/* House Type */}
-          {houseType && houseType.length > 0 && (
+          {/* Room Type */}
+          {roomType && roomType.length > 0 && (
             <div className="flex md:flex-col items-center gap-2"> 
             
               {/* <FaBed className="text-orange-600 text-sm md:text-base" /> */}
-              <div className="text-xs md:text-sm font-semibold text-gray-700">house Type:</div>
+              <div className="text-xs md:text-sm font-semibold text-gray-700">Room Type:</div>
               <div className="flex flex-wrap gap-1.5">
-                {houseType.map((type, idx) => (
+                {roomType.map((type, idx) => (
                   <span 
                     key={idx} 
                     className="bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 px-3 py-1 rounded-lg text-xs md:text-sm font-medium shadow-sm"
@@ -68,11 +68,11 @@ export default function PropertyDetails({
             </div>
           )}
 
-          {/* House Size */}
+          {/* Room Size */}
           {roomSize && (
             <div className="flex md:flex-col items-center gap-2">
               {/* <FaRulerCombined className="text-blue-600 text-sm md:text-base" /> */}
-              <span className="text-xs md:text-sm font-semibold text-gray-700">House Size:</span>
+              <span className="text-xs md:text-sm font-semibold text-gray-700">Size:</span>
               <span className="text-gray-800 font-semibold text-xs md:text-sm bg-blue-50 px-3 py-1 rounded-lg">{roomSize}</span>
             </div>
           )}

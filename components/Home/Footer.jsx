@@ -30,8 +30,8 @@ export default function Footer() {
     { name: 'Rooms', href: '/rooms', icon: FaBed },
     { name: 'Flats', href: '/flats', icon: FaBuilding },
     { name: 'Hostels', href: '/hostels', icon: FaUserFriends },
-    { name: 'Houses', href: '/houses', icon: FaHome },
-    { name: 'Commercial', href: '/commercial', icon: FaWarehouse },
+    { name: 'House', href: '/house', icon: FaHome },
+    { name: 'Commercials', href: '/commercials', icon: FaWarehouse },
     { name: 'Hotel Rooms', href: '/hotels', icon: FaHotel }
   ];
 

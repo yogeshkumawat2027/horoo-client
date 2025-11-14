@@ -96,8 +96,8 @@ export default function CommercialPage() {
 
       const hasFilters = Object.values(filters).some(v => v !== '');
       const url = hasFilters 
-        ? `${API}/commercials/commercial/filter-for-user?${params.toString()}`
-        : `${API}/commercials/commercial-for-user`;
+        ? `${API}/commercial/filter-for-user?${params.toString()}`
+        : `${API}/commercial-for-user`;
 
       const res = await fetch(url);
       const data = await res.json();
