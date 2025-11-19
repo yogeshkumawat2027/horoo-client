@@ -10,8 +10,9 @@ import HotelDetails from '@/components/Properties/HotelDetails';
 
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
+import HotelRecommend from "@/components/Recomended/HotelRecommend";
 
-const API = 'http://localhost:5000/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function Page() {
   const params = useParams();
@@ -199,6 +200,13 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+      {/* Recommended Hotels Section */}
+      <HotelRecommend
+        currentHorooId={hotel.horooId}
+        areaId={hotel.area?._id}
+        cityId={hotel.city?._id}
+      />
 
       {/* FORM POPUP */}
       <RequestFormPopup

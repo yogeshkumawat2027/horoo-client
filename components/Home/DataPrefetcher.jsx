@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from 'react';
 
-const API = 'http://localhost:5000/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function DataPrefetcher() {
   useEffect(() => {

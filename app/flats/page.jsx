@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import FlatCard from '@/components/Home/cards/FlatCard';
 
-const API = 'https://horoo-backend-latest.onrender.com/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function FlatPage() {
   // State management

@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import RoomCard from '@/components/Home/cards/RoomCard';
 
-const API = 'http://localhost:5000/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function RoomPage() {
   // State management

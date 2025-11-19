@@ -142,7 +142,7 @@ export default function Navbar() {
 
             {/* List Property - Simple */}
             <Link 
-              href="/owner/addcommercial"
+              href="/listproperty"
               className="text-lg text-gray-600 hover:text-orange-600 font-semibold transition-colors duration-200"
             >
               List Property

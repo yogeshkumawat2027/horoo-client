@@ -9,8 +9,9 @@ import PropertyLocation from '@/components/Properties/PropertyLocation';
 import FlatDetails from '@/components/Properties/FlatDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
+import FlatRecommend from "@/components/Recomended/FlatRecommend";
 
-const API = 'https://horoo-backend-latest.onrender.com/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function Page() {
   const params = useParams();
@@ -208,6 +209,13 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+      {/* Recommended Flats Section */}
+      <FlatRecommend
+        currentHorooId={flat.horooId}
+        areaId={flat.area?._id}
+        cityId={flat.city?._id}
+      />
 
       {/* FORM POPUP */}
       <RequestFormPopup

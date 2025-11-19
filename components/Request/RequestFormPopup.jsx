@@ -15,9 +15,16 @@ export default function RequestFormPopup({ open, setOpen, horooId, onSuccess }) 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
+
+    // Validate phone number
+    if (formData.phone.length < 10) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
 
     try {
-      const res = await fetch("http://localhost:5000/api/requests", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requests`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -30,17 +37,31 @@ export default function RequestFormPopup({ open, setOpen, horooId, onSuccess }) 
       const data = await res.json();
 
       if (data.success) {
+        setFormData({ name: "", phone: "" }); // Reset form
         setOpen(false);
         onSuccess();
+      } else {
+        alert(data.message || 'Failed to submit request');
       }
     } catch (error) {
-      console.log(error);
+      console.error('Request submission error:', error);
+      alert('Failed to submit request. Please try again.');
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white shadow-2xl border border-gray-200 w-[90%] max-w-md p-6 rounded-xl relative">
+    <div 
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          setOpen(false);
+        }
+      }}
+    >
+      <div 
+        className="bg-white shadow-2xl border border-gray-200 w-full max-w-md p-6 rounded-xl relative max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* Close Button */}
         <button
@@ -82,19 +103,21 @@ export default function RequestFormPopup({ open, setOpen, horooId, onSuccess }) 
           <div>
             <label className="font-medium text-gray-800">Phone Number</label>
             <input
-              type="number"
+              type="tel"
               required
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              pattern="[0-9]{10}"
+              maxLength="10"
               className="w-full border border-gray-300 rounded-lg p-2 text-gray-900"
-              placeholder="Enter your phone number"
+              placeholder="Enter 10-digit phone number"
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-orange-600 text-white py-2 rounded-lg font-semibold text-lg
-            hover:bg-orange-700 transition"
+            className="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold text-lg
+            hover:bg-orange-700 transition active:scale-95 touch-manipulation"
           >
             Submit Request
           </button>

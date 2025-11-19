@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import HotelCard from '@/components/Home/cards/HotelCard';
 
-const API = 'http://localhost:5000/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function HotelPage() {
   // State management

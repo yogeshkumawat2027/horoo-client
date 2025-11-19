@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import HouseCard from '@/components/Home/cards/HouseCard';
 
-const API = 'http://localhost:5000/api';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function HousePage() {
   // State management

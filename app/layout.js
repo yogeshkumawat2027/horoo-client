@@ -27,9 +27,12 @@ export default function RootLayout({ children }) {
       >
         <Navbar />
         {children}
-         <SpeedInsights />
+         <SpeedInsights />  
+         {/* vecel speed insight to check performance */}
           <Footer />
       </body>
     </html>
   );
 }
+
+
