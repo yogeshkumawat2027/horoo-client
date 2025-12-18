@@ -106,14 +106,14 @@ export default function PriceCard({
       </button>
 
       {/* Timer Message */}
-      {isButtonDisabled && timeLeft > 0 && (
+      {/* {isButtonDisabled && timeLeft > 0 && (
         <div className="mt-3 text-center text-xs md:text-sm text-gray-600 bg-orange-50 border border-orange-200 rounded-lg py-2 px-3">
           You can send request again after{' '}
           <span className="font-bold text-orange-600">
             {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
           </span>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

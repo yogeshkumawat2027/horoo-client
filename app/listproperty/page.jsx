@@ -140,7 +140,7 @@ export default function ListPropertyPage() {
             Hello Property Owners!
           </h1>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            Welcome to <span className="text-orange-600">Horoo</span>
+            Become Partner of <span className="text-orange-600">Horoo</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
              Fill the form below to list your property, 
