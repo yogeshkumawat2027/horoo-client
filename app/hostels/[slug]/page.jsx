@@ -4,19 +4,19 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
-import PriceCardForHotel from '@/components/Properties/PriceCardForHotel';
+import PriceCard from '@/components/Properties/PriceCard';
 import PropertyLocation from '@/components/Properties/PropertyLocation';
-import HotelDetails from '@/components/Properties/HotelDetails';
-
+import HostelDetails from '@/components/Properties/HostelDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
-import HotelRecommend from "@/components/Recomended/HotelRecommend";
+import HostelRecommend from "@/components/Recomended/HostelRecommend";
+import ReviewSection from "@/components/Properties/ReviewSection";
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function Page() {
   const params = useParams();
-  const [hotel, setHotel] = useState(null);
+  const [hostel, setHostel] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Popup visibility states
@@ -26,13 +26,16 @@ export default function Page() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    if (params.id) fetchHotelDetails();
-  }, [params.id]);
+    if (params.slug) {
+      fetchHostelDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.slug]);
 
   // Check if button was disabled for this horooId
   useEffect(() => {
-    if (hotel?.horooId) {
-      const disabledUntil = localStorage.getItem(`request_disabled_${hotel.horooId}`);
+    if (hostel?.horooId) {
+      const disabledUntil = localStorage.getItem(`request_disabled_${hostel.horooId}`);
       if (disabledUntil) {
         const now = Date.now();
         const remaining = parseInt(disabledUntil) - now;
@@ -41,7 +44,6 @@ export default function Page() {
           setIsButtonDisabled(true);
           setTimeLeft(Math.ceil(remaining / 1000));
           
-          // Update timer every second
           const interval = setInterval(() => {
             const currentRemaining = parseInt(disabledUntil) - Date.now();
             if (currentRemaining > 0) {
@@ -49,31 +51,33 @@ export default function Page() {
             } else {
               setIsButtonDisabled(false);
               setTimeLeft(0);
-              localStorage.removeItem(`request_disabled_${hotel.horooId}`);
+              localStorage.removeItem(`request_disabled_${hostel.horooId}`);
               clearInterval(interval);
             }
           }, 1000);
           
           return () => clearInterval(interval);
         } else {
-          localStorage.removeItem(`request_disabled_${hotel.horooId}`);
+          localStorage.removeItem(`request_disabled_${hostel.horooId}`);
         }
       }
     }
-  }, [hotel?.horooId]);
+  }, [hostel?.horooId]);
 
-  const fetchHotelDetails = async () => {
+  const fetchHostelDetails = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/hotel/${params.id}`);
+      const res = await fetch(`${API}/hostel/${params.slug}`);
       const data = await res.json();
-
-      if (data.success) setHotel(data.hotelRoom);
-
+      
+      if (data.success) {
+        setHostel(data.hostel);
+      }
     } catch (error) {
-      console.error('Error fetching hotel details:', error);
+      console.error('Error fetching hostel details:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (loading) {
@@ -81,32 +85,33 @@ export default function Page() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">Loading hotel details...</p>
+          <p className="mt-4 text-gray-600 font-medium">Loading hostel details...</p>
         </div>
       </div>
     );
   }
 
-  if (!hotel) {
+  if (!hostel) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <FaBed className="text-6xl text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Hotel Not Found</h2>
-          <p className="text-gray-600 mb-6">The hotel you're looking for doesn't exist.</p>
-          <Link
-            href="/hotels"
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Hostel Not Found</h2>
+          <p className="text-gray-600 mb-6">The hostel you're looking for doesn't exist.</p>
+          <Link 
+            href="/hostels"
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all font-semibold"
           >
             <FaArrowLeft />
-            Back to Hotels
+            Back to Hostels
           </Link>
         </div>
       </div>
     );
   }
 
-  const allImages = [hotel.mainImage, ...(hotel.otherImages || [])].filter(Boolean);
+  // Prepare images array
+  const allImages = [hostel.mainImage, ...(hostel.otherImages || [])].filter(Boolean);
 
   const handleBookingRequest = () => {
     setOpenFormPopup(true);
@@ -116,12 +121,10 @@ export default function Page() {
     setOpenThanksPopup(true);
     setIsButtonDisabled(true);
     
-    // Disable button for 2 minutes (120000 ms) for this specific horooId
     const disabledUntil = Date.now() + 120000;
-    localStorage.setItem(`request_disabled_${hotel.horooId}`, disabledUntil.toString());
+    localStorage.setItem(`request_disabled_${hostel.horooId}`, disabledUntil.toString());
     setTimeLeft(120);
     
-    // Update timer every second
     const interval = setInterval(() => {
       const remaining = disabledUntil - Date.now();
       if (remaining > 0) {
@@ -129,7 +132,7 @@ export default function Page() {
       } else {
         setIsButtonDisabled(false);
         setTimeLeft(0);
-        localStorage.removeItem(`request_disabled_${hotel.horooId}`);
+        localStorage.removeItem(`request_disabled_${hostel.horooId}`);
         clearInterval(interval);
       }
     }, 1000);
@@ -137,62 +140,82 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Back Button */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 py-2">
-          <Link
-            href="/hotels"
+          <Link 
+            href="/hostels"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
           >
-            <FaArrowLeft /> Back to Hotels
+            <FaArrowLeft />
+            Back to Hostels
           </Link>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+          {/* Left Column - Images & Details */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Image Gallery */}
             <ShowImages images={allImages} />
 
+            {/* Property Location */}
             <PropertyLocation
-              propertyName={hotel.horooName || hotel.propertyName}
-              area={hotel.area?.name}
-              city={hotel.city?.name}
-              state={hotel.state?.name}
-              pincode={hotel.pincode}
-              nearbyAreas={hotel.nearbyAreas}
+              propertyName={hostel.horooName || hostel.propertyName}
+              area={hostel.area?.name}
+              city={hostel.city?.name}
+              state={hostel.state?.name}
+              pincode={hostel.pincode}
+              nearbyAreas={hostel.nearbyAreas}
+              averageRating={hostel.averageRating}
+              totalRatings={hostel.totalRatings}
             />
 
+            {/* Price Card - Show on mobile only */}
             <div className="lg:hidden">
-              <PriceCardForHotel
-                horooId={hotel.horooId}
-                ownerPrice={hotel.ownerPrice}
-                horooPrice={hotel.horooPrice}
-                pricePlans={hotel.pricePlans}
-                availability={hotel.availability}
+              <PriceCard
+                horooId={hostel.horooId}
+                ownerPrice={hostel.ownerPrice}
+                horooPrice={hostel.horooPrice}
+                pricePlans={hostel.pricePlans}
+                availability={hostel.availability}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
               />
             </div>
 
-            <HotelDetails
-              roomType={hotel.roomType}
-              availableFor={hotel.availableFor}
-              roomSize={hotel.roomSize}
-              facilities={hotel.facilities}
-              description={hotel.description}
-              youtubeLink={hotel.youtubeLink}
+            {/* Property Details */}
+            <HostelDetails
+              roomType={hostel.roomType}
+              availableFor={hostel.availableFor}
+              roomSize={hostel.roomSize}
+              facilities={hostel.facilities}
+              description={hostel.description}
+              messDescription={hostel.messDescription}
+              youtubeLink={hostel.youtubeLink}
+            />
+
+            {/* Reviews Section */}
+            <ReviewSection
+              propertyId={hostel._id}
+              propertyType="Hostel"
+              averageRating={hostel.averageRating}
+              totalRatings={hostel.totalRatings}
+              reviews={hostel.reviews || []}
+              onReviewAdded={fetchHostelDetails}
             />
           </div>
 
+          {/* Right Column - Pricing & Booking (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
-            <PriceCardForHotel
-              horooId={hotel.horooId}
-              ownerPrice={hotel.ownerPrice}
-              horooPrice={hotel.horooPrice}
-              pricePlans={hotel.pricePlans}
-              availability={hotel.availability}
+            <PriceCard
+              horooId={hostel.horooId}
+              ownerPrice={hostel.ownerPrice}
+              horooPrice={hostel.horooPrice}
+              pricePlans={hostel.pricePlans}
+              availability={hostel.availability}
               onBookingRequest={handleBookingRequest}
               isButtonDisabled={isButtonDisabled}
               timeLeft={timeLeft}
@@ -201,18 +224,18 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Recommended Hotels Section */}
-      <HotelRecommend
-        currentHorooId={hotel.horooId}
-        areaId={hotel.area?._id}
-        cityId={hotel.city?._id}
+      {/* Recommended Hostels Section */}
+      <HostelRecommend
+        currentHorooId={hostel.horooId}
+        areaId={hostel.area?._id}
+        cityId={hostel.city?._id}
       />
 
       {/* FORM POPUP */}
       <RequestFormPopup
         open={openFormPopup}
         setOpen={setOpenFormPopup}
-        horooId={hotel.horooId}
+        horooId={hostel.horooId}
         onSuccess={handleRequestSuccess}
       />
 

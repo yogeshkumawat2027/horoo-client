@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import LoginPopup from '../LoginPopup';
+import SignupPopup from '../SignupPopup';
 import { 
   FaBars, 
   FaTimes, 
@@ -12,7 +14,8 @@ import {
   FaUtensils, 
   FaWarehouse, 
   FaHotel,
-  FaPhoneAlt,
+  FaUser,
+  FaSignOutAlt,
   FaUserFriends 
 } from 'react-icons/fa';
 
@@ -20,6 +23,19 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPropertiesDropdownOpen, setIsPropertiesDropdownOpen] = useState(false);
   const [isMobilePropertiesOpen, setIsMobilePropertiesOpen] = useState(false);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isSignupPopupOpen, setIsSignupPopupOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const userToken = localStorage.getItem('userToken');
+    const userData = localStorage.getItem('user');
+    if (userToken && userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   // Handle body scroll lock when menu is open
   useEffect(() => {
@@ -46,6 +62,24 @@ export default function Navbar() {
 
   const toggleMobileProperties = () => {
     setIsMobilePropertiesOpen(!isMobilePropertiesOpen);
+  };
+
+  const openLoginPopup = () => {
+    setIsSignupPopupOpen(false);
+    setIsLoginPopupOpen(true);
+  };
+
+  const openSignupPopup = () => {
+    setIsLoginPopupOpen(false);
+    setIsSignupPopupOpen(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('user');
+    setUser(null);
+    setIsUserDropdownOpen(false);
+    window.location.reload();
   };
 
   const propertyTypes = [
@@ -148,17 +182,69 @@ export default function Navbar() {
               List Property
             </Link>
 
-            {/* Call Us Button */}
-            <a 
-              href="tel:+919166260477"
-              className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium text-xs transition-all duration-200 hover:shadow-md flex items-center gap-2"
-            >
-              <FaPhoneAlt className="w-3 h-3 animate-pulse" />
-              <div className="flex flex-col leading-tight">
-                <span className="text-xs font-semibold">Book Now</span>
-                <span className="text-xs opacity-90">9166260477</span>
+            {/* User Authentication */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                  onMouseEnter={() => setIsUserDropdownOpen(true)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 transition-colors"
+                >
+                  {user.profilePicture ? (
+                    <img 
+                      src={user.profilePicture} 
+                      alt={user.name}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-orange-500"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="font-semibold">{user.name.split(' ')[0]}</span>
+                  <FaChevronDown className="text-sm" />
+                </button>
+
+                {/* User Dropdown */}
+                <div 
+                  className={`absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 transition-all duration-200 ${
+                    isUserDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
+                  }`}
+                  onMouseLeave={() => setIsUserDropdownOpen(false)}
+                >
+                  <Link
+                    href="/profile"
+                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                    onClick={() => setIsUserDropdownOpen(false)}
+                  >
+                    <FaUser />
+                    <span>My Profile</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-orange-50 hover:text-red-600 transition-colors"
+                  >
+                    <FaSignOutAlt />
+                    <span>Logout</span>
+                  </button>
+                </div>
               </div>
-            </a>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => openLoginPopup()}
+                  className="text-orange-600 hover:text-orange-700 font-semibold px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-200"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => openSignupPopup()}
+                  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-md"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -273,32 +359,93 @@ export default function Navbar() {
 
             {/* List Property - Simple Mobile */}
             <Link
-              href="/owner/addcommercial"
+              href="/listproperty"
               className="block px-4 py-4 text-lg text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl font-semibold transition-all duration-200 border-b border-gray-100"
               onClick={() => setIsMenuOpen(false)}
             >
               List Property
             </Link>
 
-            {/* Call Us Button - Mobile */}
-            <div className="p-4">
-              <a
-                href="tel:+919166260477"
-                className="block bg-orange-600 hover:bg-orange-700 text-white px-4 py-3 rounded-xl font-medium text-center transition-all duration-200 hover:shadow-lg"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <div className="flex items-center justify-center gap-3">
-                  <FaPhoneAlt className="w-4 h-4 animate-pulse" />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold">Call Now</span>
-                    <span className="text-xs opacity-90">+91 9166260477</span>
+            {/* User Authentication - Mobile */}
+            {user ? (
+              <div className="border-t border-gray-200 pt-3 mt-3">
+                <div className="flex items-center space-x-3 px-4 py-3 bg-orange-50 rounded-lg">
+                  {user.profilePicture ? (
+                    <img 
+                      src={user.profilePicture} 
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-orange-500"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-semibold text-gray-800">{user.name}</p>
+                    <p className="text-sm text-gray-600">{user.email}</p>
                   </div>
                 </div>
-              </a>
-            </div>
+                
+                <Link
+                  href="/profile"
+                  className="flex items-center space-x-3 px-4 py-3 mt-2 text-gray-700 hover:bg-orange-50 rounded-lg transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FaUser />
+                  <span>My Profile</span>
+                </Link>
+                
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="p-4 space-y-3 border-t border-gray-200 mt-3">
+                <button
+                  onClick={() => {
+                    openLoginPopup();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full bg-white border-2 border-orange-600 text-orange-600 font-semibold px-4 py-3 rounded-lg hover:bg-orange-50 transition-all duration-200"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    openSignupPopup();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-3 rounded-lg transition-all duration-200"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Login Popup - Rendered outside navbar */}
+      <LoginPopup 
+        isOpen={isLoginPopupOpen}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onSwitchToSignup={openSignupPopup}
+      />
+
+      {/* Signup Popup - Rendered outside navbar */}
+      <SignupPopup 
+        isOpen={isSignupPopupOpen}
+        onClose={() => setIsSignupPopupOpen(false)}
+        onSwitchToLogin={openLoginPopup}
+      />
     </nav>
   );
 }

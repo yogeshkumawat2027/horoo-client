@@ -1,5 +1,5 @@
 "use client";
-import { FaMapMarkerAlt, FaLock } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaLock, FaStar } from 'react-icons/fa';
 
 export default function PropertyLocation({ 
   propertyName,
@@ -7,14 +7,31 @@ export default function PropertyLocation({
   city,
   state,
   pincode,
-  nearbyAreas = []
+  nearbyAreas = [],
+  averageRating,
+  totalRatings
 }) {
   return (
     <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
-      {/* Property Name */}
-      <h1 className="text-xl md:text-3xl font-bold text-gray-800 mb-4">
-        {propertyName}
-      </h1>
+      {/* Property Name with Rating */}
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <h1 className="text-xl md:text-3xl font-bold text-gray-800 flex-1">
+          {propertyName}
+        </h1>
+        
+        {/* Rating Badge - Same as Card */}
+        {averageRating !== undefined && totalRatings !== undefined && (
+          <div className="flex items-center gap-1 bg-yellow-50 px-3 py-2 rounded-lg flex-shrink-0">
+            <FaStar className="text-yellow-500 text-sm md:text-base" />
+            <span className="text-sm md:text-lg font-bold text-gray-800">
+              {averageRating?.toFixed(1) || '3.5'}
+            </span>
+            <span className="text-xs md:text-sm text-gray-500">
+              ({totalRatings || 0})
+            </span>
+          </div>
+        )}
+      </div>
       
       {/* Location - Single Line */}
       <div className="flex items-center gap-2 text-gray-600 mb-4">

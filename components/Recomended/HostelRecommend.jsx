@@ -118,6 +118,7 @@ export default function HostelRecommend({ currentHorooId, areaId, cityId }) {
                     availableFor={hostel.availableFor}
                     ownerPrice={hostel.ownerPrice}
                     horooPrice={hostel.horooPrice}
+                    slug={hostel.slug}
                     mainImage={hostel.mainImage}
                   />
                 </div>
@@ -175,6 +176,7 @@ export default function HostelRecommend({ currentHorooId, areaId, cityId }) {
                     ownerPrice={hostel.ownerPrice}
                     horooPrice={hostel.horooPrice}
                     mainImage={hostel.mainImage}
+                    slug={hostel.slug}
                   />
                 </div>
               ))}

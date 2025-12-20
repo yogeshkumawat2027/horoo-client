@@ -109,6 +109,7 @@ export default function RoomRecommend({ currentHorooId, areaId, cityId }) {
                 >
                   <RoomCard
                     horooId={room.horooId}
+                    slug={room.slug}
                     horooName={room.horooName}
                     state={room.state}
                     city={room.city}
@@ -165,6 +166,7 @@ export default function RoomRecommend({ currentHorooId, areaId, cityId }) {
                 >
                   <RoomCard
                     horooId={room.horooId}
+                    slug={room.slug}
                     horooName={room.horooName}
                     state={room.state}
                     city={room.city}

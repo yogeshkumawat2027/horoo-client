@@ -119,6 +119,7 @@ export default function HouseRecommend({ currentHorooId, areaId, cityId }) {
                     ownerPrice={house.ownerPrice}
                     horooPrice={house.horooPrice}
                     mainImage={house.mainImage}
+                    slug={house.slug}
                   />
                 </div>
               ))}
@@ -175,6 +176,7 @@ export default function HouseRecommend({ currentHorooId, areaId, cityId }) {
                     ownerPrice={house.ownerPrice}
                     horooPrice={house.horooPrice}
                     mainImage={house.mainImage}
+                    slug={house.slug}
                   />
                 </div>
               ))}

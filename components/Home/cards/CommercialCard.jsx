@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FaMapMarkerAlt, FaUsers, FaWarehouse, FaRupeeSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUsers, FaWarehouse, FaRupeeSign, FaStar } from 'react-icons/fa';
 
 export default function CommercialCard({
   horooId,
@@ -13,8 +13,14 @@ export default function CommercialCard({
   ownerPrice,
   horooPrice,
   mainImage,
-  commercialSize
+  commercialSize,
+  slug,
+  averageRating = 3.5,
+  totalRatings = 0
 }) {
+  // Use slug if available, fallback to horooId for backward compatibility
+  const urlSlug = slug || horooId;
+
   // Format commercial types for display
   const formatCommercialTypes = (types) => {
     if (!types || types.length === 0) return 'Commercial Available';
@@ -44,7 +50,7 @@ export default function CommercialCard({
 
   return (
     <Link 
-      href={`/commercials/${horooId}`}
+      href={`/commercials/${urlSlug}`}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">
@@ -59,10 +65,23 @@ export default function CommercialCard({
 
       {/* Content Section */}
       <div className="p-5">
-        {/* Property Name */}
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">
-          {horooName}
-        </h3>
+        {/* Property Name and Rating */}
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-bold text-gray-800 line-clamp-1 group-hover:text-orange-600 transition-colors flex-1">
+            {horooName}
+          </h3>
+          
+          {/* Rating Badge */}
+          <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg ml-2">
+            <FaStar className="text-yellow-500 text-sm" />
+            <span className="text-sm font-bold text-gray-800">
+              {averageRating?.toFixed(1) || '3.5'}
+            </span>
+            <span className="text-xs text-gray-500">
+              ({totalRatings || 0})
+            </span>
+          </div>
+        </div>
 
         {/* Location */}
         <div className="flex items-start gap-2 mb-3">
@@ -140,15 +159,6 @@ export default function CommercialCard({
           )}
         </div>
 
-        {/* Explore Button */}
-        {/* <Link 
-          href={`/commercial/${horooId}`}
-          className="block w-full"
-        >
-          <button className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:shadow-md">
-            Explore Details
-          </button>
-        </Link> */}
       </div>
     </div>
     </Link>

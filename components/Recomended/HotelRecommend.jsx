@@ -119,6 +119,7 @@ export default function HotelRecommend({ currentHorooId, areaId, cityId }) {
                     ownerPrice={hotel.ownerPrice}
                     horooPrice={hotel.horooPrice}
                     mainImage={hotel.mainImage}
+                    slug={hotel.slug}
                   />
                 </div>
               ))}
@@ -175,6 +176,7 @@ export default function HotelRecommend({ currentHorooId, areaId, cityId }) {
                     ownerPrice={hotel.ownerPrice}
                     horooPrice={hotel.horooPrice}
                     mainImage={hotel.mainImage}
+                    slug={hotel.slug}
                   />
                 </div>
               ))}

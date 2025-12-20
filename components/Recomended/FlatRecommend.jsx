@@ -109,6 +109,7 @@ export default function FlatRecommend({ currentHorooId, areaId, cityId }) {
                 >
                   <FlatCard
                     horooId={flat.horooId}
+                    slug={flat.slug}
                     horooName={flat.horooName}
                     state={flat.state}
                     city={flat.city}
@@ -165,6 +166,7 @@ export default function FlatRecommend({ currentHorooId, areaId, cityId }) {
                 >
                   <FlatCard
                     horooId={flat.horooId}
+                    slug={flat.slug}
                     horooName={flat.horooName}
                     state={flat.state}
                     city={flat.city}

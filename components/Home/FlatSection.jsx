@@ -8,6 +8,7 @@ export default function FlatSection() {
   const rawFlatData = [
     {
       horooId: "HFL0001",
+      slug: "luxurious-2bhk-family-flat",
       horooName: "Luxurious 2BHK Family Flat",
       state: { name: "Delhi" },
       city: { name: "New Delhi" },
@@ -27,6 +28,7 @@ export default function FlatSection() {
     },
     {
       horooId: "HFL0002",
+      slug: "modern-1bhk-near-it-hub",
       horooName: "Modern 1BHK Near IT Hub",
       state: { name: "Karnataka" },
       city: { name: "Bangalore" },
@@ -46,6 +48,7 @@ export default function FlatSection() {
     },
     {
       horooId: "HFL0003",
+      slug: "spacious-3bhk-for-large-family",
       horooName: "Spacious 3BHK for Large Family",
       state: { name: "Maharashtra" },
       city: { name: "Pune" },

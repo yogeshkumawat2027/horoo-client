@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FaMapMarkerAlt, FaUsers, FaHome, FaRupeeSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUsers, FaHome, FaRupeeSign, FaStar } from 'react-icons/fa';
 
 export default function HouseCard({
   horooId,
@@ -13,8 +13,14 @@ export default function HouseCard({
   ownerPrice,
   horooPrice,
   mainImage,
-  roomSize
+  roomSize,
+  slug,
+  averageRating = 3.5,
+  totalRatings = 0
 }) {
+  // Use slug if available, fallback to horooId for backward compatibility
+  const urlSlug = slug || horooId;
+
   // Format house types for display
   const formatHouseTypes = (types) => {
     if (!types || types.length === 0) return 'House Available';
@@ -44,7 +50,7 @@ export default function HouseCard({
 
   return (
     <Link 
-      href={`/house/${horooId}`}
+      href={`/house/${urlSlug}`}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">
@@ -59,10 +65,23 @@ export default function HouseCard({
 
       {/* Content Section */}
       <div className="p-5">
-        {/* Property Name */}
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-orange-600 transition-colors">
-          {horooName}
-        </h3>
+        {/* Property Name and Rating */}
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-bold text-gray-800 line-clamp-1 group-hover:text-orange-600 transition-colors flex-1">
+            {horooName}
+          </h3>
+          
+          {/* Rating Badge */}
+          <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg ml-2">
+            <FaStar className="text-yellow-500 text-sm" />
+            <span className="text-sm font-bold text-gray-800">
+              {averageRating?.toFixed(1) || '3.5'}
+            </span>
+            <span className="text-xs text-gray-500">
+              ({totalRatings || 0})
+            </span>
+          </div>
+        </div>
 
         {/* Location */}
         <div className="flex items-start gap-2 mb-3">

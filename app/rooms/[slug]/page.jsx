@@ -6,16 +6,17 @@ import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
 import PriceCard from '@/components/Properties/PriceCard';
 import PropertyLocation from '@/components/Properties/PropertyLocation';
-import HouseDetails from '@/components/Properties/HouseDetails';
+import RoomDetails from '@/components/Properties/RoomDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
-import HouseRecommend from "@/components/Recomended/HouseRecommend";
+import RoomRecommend from "@/components/Recomended/RoomRecommend";
+import ReviewSection from "@/components/Properties/ReviewSection";
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function Page() {
   const params = useParams();
-  const [house, setHouse] = useState(null);
+  const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Popup visibility states
@@ -25,16 +26,16 @@ export default function Page() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    if (params.id) {
-      fetchHouseDetails();
+    if (params.slug) {
+      fetchRoomDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
+  }, [params.slug]);
 
   // Check if button was disabled for this horooId
   useEffect(() => {
-    if (house?.horooId) {
-      const disabledUntil = localStorage.getItem(`request_disabled_${house.horooId}`);
+    if (room?.horooId) {
+      const disabledUntil = localStorage.getItem(`request_disabled_${room.horooId}`);
       if (disabledUntil) {
         const now = Date.now();
         const remaining = parseInt(disabledUntil) - now;
@@ -43,6 +44,7 @@ export default function Page() {
           setIsButtonDisabled(true);
           setTimeLeft(Math.ceil(remaining / 1000));
           
+          // Update timer every second
           const interval = setInterval(() => {
             const currentRemaining = parseInt(disabledUntil) - Date.now();
             if (currentRemaining > 0) {
@@ -50,30 +52,30 @@ export default function Page() {
             } else {
               setIsButtonDisabled(false);
               setTimeLeft(0);
-              localStorage.removeItem(`request_disabled_${house.horooId}`);
+              localStorage.removeItem(`request_disabled_${room.horooId}`);
               clearInterval(interval);
             }
           }, 1000);
           
           return () => clearInterval(interval);
         } else {
-          localStorage.removeItem(`request_disabled_${house.horooId}`);
+          localStorage.removeItem(`request_disabled_${room.horooId}`);
         }
       }
     }
-  }, [house?.horooId]);
+  }, [room?.horooId]);
 
-  const fetchHouseDetails = async () => {
+  const fetchRoomDetails = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/house/${params.id}`);
+      const res = await fetch(`${API}/room/${params.slug}`);
       const data = await res.json();
       
       if (data.success) {
-        setHouse(data.house);
+        setRoom(data.room);
       }
     } catch (error) {
-      console.error('Error fetching house details:', error);
+      console.error('Error fetching room details:', error);
     } finally {
       setLoading(false);
     }
@@ -84,25 +86,25 @@ export default function Page() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">Loading house details...</p>
+          <p className="mt-4 text-gray-600 font-medium">Loading room details...</p>
         </div>
       </div>
     );
   }
 
-  if (!house) {
+  if (!room) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <FaBed className="text-6xl text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">House Not Found</h2>
-          <p className="text-gray-600 mb-6">The house you're looking for doesn't exist.</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Room Not Found</h2>
+          <p className="text-gray-600 mb-6">The room you're looking for doesn't exist.</p>
           <Link 
-            href="/houses"
+            href="/rooms"
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all font-semibold"
           >
             <FaArrowLeft />
-            Back to Houses
+            Back to Rooms
           </Link>
         </div>
       </div>
@@ -110,7 +112,7 @@ export default function Page() {
   }
 
   // Prepare images array
-  const allImages = [house.mainImage, ...(house.otherImages || [])].filter(Boolean);
+  const allImages = [room.mainImage, ...(room.otherImages || [])].filter(Boolean);
 
   const handleBookingRequest = () => {
     setOpenFormPopup(true);
@@ -120,10 +122,12 @@ export default function Page() {
     setOpenThanksPopup(true);
     setIsButtonDisabled(true);
     
+    // Disable button for 2 minutes (120000 ms) for this specific horooId
     const disabledUntil = Date.now() + 120000;
-    localStorage.setItem(`request_disabled_${house.horooId}`, disabledUntil.toString());
+    localStorage.setItem(`request_disabled_${room.horooId}`, disabledUntil.toString());
     setTimeLeft(120);
     
+    // Update timer every second
     const interval = setInterval(() => {
       const remaining = disabledUntil - Date.now();
       if (remaining > 0) {
@@ -131,7 +135,7 @@ export default function Page() {
       } else {
         setIsButtonDisabled(false);
         setTimeLeft(0);
-        localStorage.removeItem(`request_disabled_${house.horooId}`);
+        localStorage.removeItem(`request_disabled_${room.horooId}`);
         clearInterval(interval);
       }
     }, 1000);
@@ -143,11 +147,11 @@ export default function Page() {
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 py-2">
           <Link 
-            href="/houses"
+            href="/rooms"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
           >
             <FaArrowLeft />
-            Back to Houses
+            Back to Rooms
           </Link>
         </div>
       </div>
@@ -161,22 +165,24 @@ export default function Page() {
 
             {/* Property Location */}
             <PropertyLocation
-              propertyName={house.horooName || house.propertyName}
-              area={house.area?.name}
-              city={house.city?.name}
-              state={house.state?.name}
-              pincode={house.pincode}
-              nearbyAreas={house.nearbyAreas}
+              propertyName={room.horooName || room.propertyName}
+              area={room.area?.name}
+              city={room.city?.name}
+              state={room.state?.name}
+              pincode={room.pincode}
+              nearbyAreas={room.nearbyAreas}
+              averageRating={room.averageRating}
+              totalRatings={room.totalRatings}
             />
 
             {/* Price Card - Show on mobile only */}
             <div className="lg:hidden">
               <PriceCard
-                horooId={house.horooId}
-                ownerPrice={house.ownerPrice}
-                horooPrice={house.horooPrice}
-                pricePlans={house.pricePlans}
-                availability={house.availability}
+                horooId={room.horooId}
+                ownerPrice={room.ownerPrice}
+                horooPrice={room.horooPrice}
+                pricePlans={room.pricePlans}
+                availability={room.availability}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
@@ -184,24 +190,34 @@ export default function Page() {
             </div>
 
             {/* Property Details */}
-            <HouseDetails
-              houseType={house.houseType}
-              availableFor={house.availableFor}
-              houseSize={house.houseSize}
-              facilities={house.facilities}
-              description={house.description}
-              youtubeLink={house.youtubeLink}
+            <RoomDetails
+              roomType={room.roomType}
+              availableFor={room.availableFor}
+              roomSize={room.roomSize}
+              facilities={room.facilities}
+              description={room.description}
+              youtubeLink={room.youtubeLink}
+            />
+
+            {/* Reviews Section */}
+            <ReviewSection
+              propertyId={room._id}
+              propertyType="Room"
+              averageRating={room.averageRating}
+              totalRatings={room.totalRatings}
+              reviews={room.reviews || []}
+              onReviewAdded={fetchRoomDetails}
             />
           </div>
 
           {/* Right Column - Pricing & Booking (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
             <PriceCard
-              horooId={house.horooId}
-              ownerPrice={house.ownerPrice}
-              horooPrice={house.horooPrice}
-              pricePlans={house.pricePlans}
-              availability={house.availability}
+              horooId={room.horooId}
+              ownerPrice={room.ownerPrice}
+              horooPrice={room.horooPrice}
+              pricePlans={room.pricePlans}
+              availability={room.availability}
               onBookingRequest={handleBookingRequest}
               isButtonDisabled={isButtonDisabled}
               timeLeft={timeLeft}
@@ -210,18 +226,18 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Recommended Houses Section */}
-      <HouseRecommend
-        currentHorooId={house.horooId}
-        areaId={house.area?._id}
-        cityId={house.city?._id}
+      {/* Recommended Rooms Section */}
+      <RoomRecommend
+        currentHorooId={room.horooId}
+        areaId={room.area?._id}
+        cityId={room.city?._id}
       />
 
       {/* FORM POPUP */}
       <RequestFormPopup
         open={openFormPopup}
         setOpen={setOpenFormPopup}
-        horooId={house.horooId}
+        horooId={room.horooId}
         onSuccess={handleRequestSuccess}
       />
 

@@ -6,16 +6,17 @@ import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
 import PriceCard from '@/components/Properties/PriceCard';
 import PropertyLocation from '@/components/Properties/PropertyLocation';
-import HostelDetails from '@/components/Properties/HostelDetails';
+import HouseDetails from '@/components/Properties/HouseDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
-import HostelRecommend from "@/components/Recomended/HostelRecommend";
+import HouseRecommend from "@/components/Recomended/HouseRecommend";
+import ReviewSection from "@/components/Properties/ReviewSection";
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function Page() {
   const params = useParams();
-  const [hostel, setHostel] = useState(null);
+  const [house, setHouse] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Popup visibility states
@@ -25,16 +26,16 @@ export default function Page() {
   const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    if (params.id) {
-      fetchHostelDetails();
+    if (params.slug) {
+      fetchHouseDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
+  }, [params.slug]);
 
   // Check if button was disabled for this horooId
   useEffect(() => {
-    if (hostel?.horooId) {
-      const disabledUntil = localStorage.getItem(`request_disabled_${hostel.horooId}`);
+    if (house?.horooId) {
+      const disabledUntil = localStorage.getItem(`request_disabled_${house.horooId}`);
       if (disabledUntil) {
         const now = Date.now();
         const remaining = parseInt(disabledUntil) - now;
@@ -50,30 +51,30 @@ export default function Page() {
             } else {
               setIsButtonDisabled(false);
               setTimeLeft(0);
-              localStorage.removeItem(`request_disabled_${hostel.horooId}`);
+              localStorage.removeItem(`request_disabled_${house.horooId}`);
               clearInterval(interval);
             }
           }, 1000);
           
           return () => clearInterval(interval);
         } else {
-          localStorage.removeItem(`request_disabled_${hostel.horooId}`);
+          localStorage.removeItem(`request_disabled_${house.horooId}`);
         }
       }
     }
-  }, [hostel?.horooId]);
+  }, [house?.horooId]);
 
-  const fetchHostelDetails = async () => {
+  const fetchHouseDetails = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/hostel/${params.id}`);
+      const res = await fetch(`${API}/house/${params.slug}`);
       const data = await res.json();
       
       if (data.success) {
-        setHostel(data.hostel);
+        setHouse(data.house);
       }
     } catch (error) {
-      console.error('Error fetching hostel details:', error);
+      console.error('Error fetching house details:', error);
     } finally {
       setLoading(false);
     }
@@ -84,25 +85,25 @@ export default function Page() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">Loading hostel details...</p>
+          <p className="mt-4 text-gray-600 font-medium">Loading house details...</p>
         </div>
       </div>
     );
   }
 
-  if (!hostel) {
+  if (!house) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <FaBed className="text-6xl text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Hostel Not Found</h2>
-          <p className="text-gray-600 mb-6">The hostel you're looking for doesn't exist.</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">House Not Found</h2>
+          <p className="text-gray-600 mb-6">The house you're looking for doesn't exist.</p>
           <Link 
-            href="/hostels"
+            href="/house"
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all font-semibold"
           >
             <FaArrowLeft />
-            Back to Hostels
+            Back to Houses
           </Link>
         </div>
       </div>
@@ -110,7 +111,7 @@ export default function Page() {
   }
 
   // Prepare images array
-  const allImages = [hostel.mainImage, ...(hostel.otherImages || [])].filter(Boolean);
+  const allImages = [house.mainImage, ...(house.otherImages || [])].filter(Boolean);
 
   const handleBookingRequest = () => {
     setOpenFormPopup(true);
@@ -121,7 +122,7 @@ export default function Page() {
     setIsButtonDisabled(true);
     
     const disabledUntil = Date.now() + 120000;
-    localStorage.setItem(`request_disabled_${hostel.horooId}`, disabledUntil.toString());
+    localStorage.setItem(`request_disabled_${house.horooId}`, disabledUntil.toString());
     setTimeLeft(120);
     
     const interval = setInterval(() => {
@@ -131,7 +132,7 @@ export default function Page() {
       } else {
         setIsButtonDisabled(false);
         setTimeLeft(0);
-        localStorage.removeItem(`request_disabled_${hostel.horooId}`);
+        localStorage.removeItem(`request_disabled_${house.horooId}`);
         clearInterval(interval);
       }
     }, 1000);
@@ -143,11 +144,11 @@ export default function Page() {
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 py-2">
           <Link 
-            href="/hostels"
+            href="/house"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
           >
             <FaArrowLeft />
-            Back to Hostels
+            Back to Houses
           </Link>
         </div>
       </div>
@@ -161,22 +162,24 @@ export default function Page() {
 
             {/* Property Location */}
             <PropertyLocation
-              propertyName={hostel.horooName || hostel.propertyName}
-              area={hostel.area?.name}
-              city={hostel.city?.name}
-              state={hostel.state?.name}
-              pincode={hostel.pincode}
-              nearbyAreas={hostel.nearbyAreas}
+              propertyName={house.horooName || house.propertyName}
+              area={house.area?.name}
+              city={house.city?.name}
+              state={house.state?.name}
+              pincode={house.pincode}
+              nearbyAreas={house.nearbyAreas}
+              averageRating={house.averageRating}
+              totalRatings={house.totalRatings}
             />
 
             {/* Price Card - Show on mobile only */}
             <div className="lg:hidden">
               <PriceCard
-                horooId={hostel.horooId}
-                ownerPrice={hostel.ownerPrice}
-                horooPrice={hostel.horooPrice}
-                pricePlans={hostel.pricePlans}
-                availability={hostel.availability}
+                horooId={house.horooId}
+                ownerPrice={house.ownerPrice}
+                horooPrice={house.horooPrice}
+                pricePlans={house.pricePlans}
+                availability={house.availability}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
@@ -184,25 +187,34 @@ export default function Page() {
             </div>
 
             {/* Property Details */}
-            <HostelDetails
-              roomType={hostel.roomType}
-              availableFor={hostel.availableFor}
-              roomSize={hostel.roomSize}
-              facilities={hostel.facilities}
-              description={hostel.description}
-              messDescription={hostel.messDescription}
-              youtubeLink={hostel.youtubeLink}
+            <HouseDetails
+              houseType={house.houseType}
+              availableFor={house.availableFor}
+              houseSize={house.houseSize}
+              facilities={house.facilities}
+              description={house.description}
+              youtubeLink={house.youtubeLink}
+            />
+
+            {/* Reviews Section */}
+            <ReviewSection
+              propertyId={house._id}
+              propertyType="House"
+              averageRating={house.averageRating}
+              totalRatings={house.totalRatings}
+              reviews={house.reviews || []}
+              onReviewAdded={fetchHouseDetails}
             />
           </div>
 
           {/* Right Column - Pricing & Booking (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
             <PriceCard
-              horooId={hostel.horooId}
-              ownerPrice={hostel.ownerPrice}
-              horooPrice={hostel.horooPrice}
-              pricePlans={hostel.pricePlans}
-              availability={hostel.availability}
+              horooId={house.horooId}
+              ownerPrice={house.ownerPrice}
+              horooPrice={house.horooPrice}
+              pricePlans={house.pricePlans}
+              availability={house.availability}
               onBookingRequest={handleBookingRequest}
               isButtonDisabled={isButtonDisabled}
               timeLeft={timeLeft}
@@ -211,18 +223,18 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Recommended Hostels Section */}
-      <HostelRecommend
-        currentHorooId={hostel.horooId}
-        areaId={hostel.area?._id}
-        cityId={hostel.city?._id}
+      {/* Recommended Houses Section */}
+      <HouseRecommend
+        currentHorooId={house.horooId}
+        areaId={house.area?._id}
+        cityId={house.city?._id}
       />
 
       {/* FORM POPUP */}
       <RequestFormPopup
         open={openFormPopup}
         setOpen={setOpenFormPopup}
-        horooId={hostel.horooId}
+        horooId={house.horooId}
         onSuccess={handleRequestSuccess}
       />
 

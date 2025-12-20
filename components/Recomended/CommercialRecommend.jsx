@@ -119,6 +119,7 @@ export default function CommercialRecommend({ currentHorooId, areaId, cityId }) 
                     ownerPrice={commercial.ownerPrice}
                     horooPrice={commercial.horooPrice}
                     mainImage={commercial.mainImage}
+                    slug={commercial.slug}
                   />
                 </div>
               ))}
@@ -175,6 +176,7 @@ export default function CommercialRecommend({ currentHorooId, areaId, cityId }) 
                     ownerPrice={commercial.ownerPrice}
                     horooPrice={commercial.horooPrice}
                     mainImage={commercial.mainImage}
+                    slug={commercial.slug}
                   />
                 </div>
               ))}
