@@ -1,8 +1,8 @@
 "use client";
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function AuthSuccess() {
+function AuthSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -43,5 +43,20 @@ export default function AuthSuccess() {
         <p className="mt-4 text-gray-600 font-semibold">Logging you in...</p>
       </div>
     </div>
+  );
+}
+
+export default function AuthSuccess() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 font-semibold">Loading...</p>
+        </div>
+      </div>
+    }>
+      <AuthSuccessContent />
+    </Suspense>
   );
 }

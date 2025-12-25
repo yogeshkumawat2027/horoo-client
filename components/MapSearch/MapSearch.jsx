@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaArrowLeft, FaSearch, FaLocationArrow, FaTimes, FaRupeeSign, FaBed, FaStar, FaMapMarkerAlt } from 'react-icons/fa';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-export default function MapSearch({ 
+function MapSearchContent({ 
   propertyType = 'flat', // flat, room, hotel, hostel, house, mess, commercial
   apiEndpoint = 'flats-for-user',
   detailPagePath = '/flats',
@@ -27,25 +27,6 @@ export default function MapSearch({
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-
-  // Delhi locations with coordinates
-  const delhiLocations = [
-    { name: 'Connaught Place, Central Delhi', lat: 28.7041, lng: 77.1025 },
-    { name: 'Chandni Chowk, Old Delhi', lat: 28.6562, lng: 77.2410 },
-    { name: 'India Gate, Central Delhi', lat: 28.6289, lng: 77.2065 },
-    { name: 'Lajpat Nagar, South Delhi', lat: 28.5677, lng: 77.2431 },
-    { name: 'Saket, South Delhi', lat: 28.5245, lng: 77.2066 },
-    { name: 'Karol Bagh, West Delhi', lat: 28.6519, lng: 77.1909 },
-    { name: 'Dwarka Sector 10, West Delhi', lat: 28.5921, lng: 77.0460 },
-    { name: 'Mayur Vihar, East Delhi', lat: 28.6127, lng: 77.2773 },
-    { name: 'Vasant Kunj, South Delhi', lat: 28.5177, lng: 77.1593 },
-    { name: 'Rohini, North Delhi', lat: 28.7458, lng: 77.1189 },
-    { name: 'Nehru Place, South Delhi', lat: 28.5494, lng: 77.2501 },
-    { name: 'Rajiv Chowk Metro Station', lat: 28.6328, lng: 77.2197 },
-    { name: 'Kashmere Gate, North Delhi', lat: 28.6676, lng: 77.2273 },
-    { name: 'Greater Kailash, South Delhi', lat: 28.5494, lng: 77.2424 },
-    { name: 'Pitampura, North Delhi', lat: 28.6957, lng: 77.1310 }
-  ];
 
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const searchContainerRef = useRef(null);
@@ -126,11 +107,11 @@ export default function MapSearch({
 
     mapboxgl.accessToken = accessToken;
 
-    // Default center (Delhi)
+    // Default center (Jaipur, Rajasthan)
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [77.2090, 28.6139],
+      center: [75.7873, 26.9124],
       zoom: 11
     });
 
@@ -330,24 +311,12 @@ export default function MapSearch({
     const query = customQuery || searchQuery;
     if (!query.trim()) return;
 
-    // Check if it's a suggestion from our list
-    const localLocation = delhiLocations.find(loc => 
-      loc.name.toLowerCase().includes(query.toLowerCase()) || 
-      query.toLowerCase().includes(loc.name.toLowerCase())
-    );
-
-    if (localLocation) {
-      updateUserLocation(localLocation.lat, localLocation.lng);
-      setShowSuggestions(false);
-      return;
-    }
-
-    // Otherwise, use Mapbox geocoding
+    // Use Mapbox geocoding for all searches
     setLoading(true);
     try {
       const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
       const res = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&limit=1`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${accessToken}&country=IN&limit=1`
       );
       const data = await res.json();
 
@@ -367,11 +336,11 @@ export default function MapSearch({
     setSearchQuery(value);
     
     if (value.trim().length > 2) {
-      // Use Mapbox Geocoding API for global suggestions
+      // Use Mapbox Geocoding API with India restriction
       try {
         const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
         const res = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${accessToken}&limit=5`
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${accessToken}&country=IN&limit=5`
         );
         const data = await res.json();
 
@@ -400,11 +369,8 @@ export default function MapSearch({
   };
 
   const handleSearchFocus = () => {
-    // Show Delhi locations when focusing on empty search
-    if (searchQuery.trim().length === 0) {
-      setFilteredSuggestions(delhiLocations);
-      setShowSuggestions(true);
-    }
+    // Do not show any default suggestions when focusing on empty search
+    // Suggestions will appear only when user types 3+ characters
   };
 
   const handleSuggestionClick = (location) => {
@@ -449,7 +415,7 @@ export default function MapSearch({
                     onChange={(e) => handleSearchInputChange(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                     onFocus={handleSearchFocus}
-                    placeholder="Search any location (e.g., Delhi, Jaipur, Mumbai)..."
+                    placeholder="Search any location in India (e.g., Jaipur, Mumbai, Bangalore)..."
                     className="flex-1 px-4 py-3 text-sm md:text-base bg-transparent focus:outline-none text-gray-800 placeholder-gray-500"
                   />
                   <button
@@ -722,5 +688,20 @@ export default function MapSearch({
         </div>
       )}
     </div>
+  );
+}
+
+export default function MapSearch(props) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading Map Search...</p>
+        </div>
+      </div>
+    }>
+      <MapSearchContent {...props} />
+    </Suspense>
   );
 }
