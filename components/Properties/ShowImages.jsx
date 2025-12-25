@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export default function ShowImages({ images = [] }) {
@@ -10,6 +10,21 @@ export default function ShowImages({ images = [] }) {
 
   // Filter out any null/undefined images
   const validImages = images.filter(img => img);
+
+  // Auto-slide for mobile
+  useEffect(() => {
+    if (validImages.length <= 1) return;
+    
+    // Only auto-slide on mobile (screen width < 768px)
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % validImages.length);
+    }, 3000); // Change image every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [validImages.length]);
 
   if (validImages.length === 0) {
     return (
@@ -143,7 +158,7 @@ export default function ShowImages({ images = [] }) {
         </div>
       </div>
 
-      {/* Mobile Layout - Swipeable with Dots */}
+      {/* Mobile Layout - Swipeable with Dots and "+X more" indicator */}
       <div className="md:hidden">
         <div className="relative rounded-xl overflow-hidden">
           {/* Main Image with Touch Swipe */}
@@ -163,6 +178,16 @@ export default function ShowImages({ images = [] }) {
             <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium">
               {currentIndex + 1} / {validImages.length}
             </div>
+
+            {/* +X More Button - Always visible when more than 4 images */}
+            {validImages.length > 4 && (
+              <div 
+                className="absolute bottom-2 right-2 bg-black/80 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer hover:bg-black/90 transition-all"
+                onClick={() => setShowFullscreen(true)}
+              >
+                +{validImages.length - 4} more
+              </div>
+            )}
           </div>
 
           {/* Dots Navigation */}
@@ -171,7 +196,7 @@ export default function ShowImages({ images = [] }) {
               {validImages.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => goToImage(idx)}
+                  onClick={() => setCurrentIndex(idx)}
                   className={`transition-all duration-300 rounded-full ${
                     currentIndex === idx
                       ? 'w-8 h-2 bg-orange-600'

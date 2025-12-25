@@ -4,9 +4,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
-import PriceCard from '@/components/Properties/PriceCard';
-import PropertyLocation from '@/components/Properties/PropertyLocation';
+import PropertyHeader from '@/components/Properties/PropertyHeader';
+import PriceAndContact from '@/components/Properties/PriceAndContact';
 import HostelDetails from '@/components/Properties/HostelDetails';
+import AddressAndNearby from '@/components/Properties/AddressAndNearby';
+import MapSection from '@/components/Properties/MapSection';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
 import HostelRecommend from "@/components/Recomended/HostelRecommend";
@@ -139,9 +141,11 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b sticky top-0 z-10">
+    <>
+      <title>{hostel.horooName} - Horoo</title>
+      <div className="min-h-screen bg-gray-50">
+        {/* Back Button */}
+        <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 py-2">
           <Link 
             href="/hostels"
@@ -155,31 +159,32 @@ export default function Page() {
 
       <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Images & Details */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Left Column - All Content */}
+          <div className="lg:col-span-2 space-y-0 bg-white">
             {/* Image Gallery */}
             <ShowImages images={allImages} />
 
-            {/* Property Location */}
-            <PropertyLocation
-              propertyName={hostel.horooName || hostel.propertyName}
+            {/* Property Header - Title, Rating, Location */}
+            <PropertyHeader
+              propertyName={hostel.horooName}
               area={hostel.area?.name}
               city={hostel.city?.name}
               state={hostel.state?.name}
               pincode={hostel.pincode}
-              nearbyAreas={hostel.nearbyAreas}
               averageRating={hostel.averageRating}
               totalRatings={hostel.totalRatings}
             />
 
             {/* Price Card - Show on mobile only */}
             <div className="lg:hidden">
-              <PriceCard
+              <PriceAndContact
                 horooId={hostel.horooId}
                 ownerPrice={hostel.ownerPrice}
                 horooPrice={hostel.horooPrice}
-                pricePlans={hostel.pricePlans}
-                availability={hostel.availability}
+                priceSuffix={hostel.priceSuffix}
+                isVerified={hostel.isVerified}
+                ownerMobile={hostel.ownerMobile}
+                ownerWhatsapp={hostel.ownerWhatsapp}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
@@ -192,9 +197,21 @@ export default function Page() {
               availableFor={hostel.availableFor}
               roomSize={hostel.roomSize}
               facilities={hostel.facilities}
-              description={hostel.description}
-              messDescription={hostel.messDescription}
-              youtubeLink={hostel.youtubeLink}
+            />
+
+            {/* Address and Nearby Areas */}
+            <AddressAndNearby
+              horooAddress={hostel.horooAddress}
+              nearbyAreas={hostel.nearbyAreas}
+            />
+
+            {/* Location Map */}
+            <MapSection
+              latitude={hostel.latitude}
+              longitude={hostel.longitude}
+              mapLink={hostel.mapLink}
+              propertyName={hostel.horooName}
+              horooAddress={hostel.horooAddress}
             />
 
             {/* Reviews Section */}
@@ -206,16 +223,25 @@ export default function Page() {
               reviews={hostel.reviews || []}
               onReviewAdded={fetchHostelDetails}
             />
+
+            {/* Description and YouTube - After Reviews */}
+            <HostelDetails
+              description={hostel.description}
+              messDescription={hostel.messDescription}
+              youtubeLink={hostel.youtubeLink}
+            />
           </div>
 
-          {/* Right Column - Pricing & Booking (Desktop only) */}
+          {/* Right Column - Pricing & Contact (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
-            <PriceCard
+            <PriceAndContact
               horooId={hostel.horooId}
               ownerPrice={hostel.ownerPrice}
               horooPrice={hostel.horooPrice}
-              pricePlans={hostel.pricePlans}
-              availability={hostel.availability}
+              priceSuffix={hostel.priceSuffix}
+              isVerified={hostel.isVerified}
+              ownerMobile={hostel.ownerMobile}
+              ownerWhatsapp={hostel.ownerWhatsapp}
               onBookingRequest={handleBookingRequest}
               isButtonDisabled={isButtonDisabled}
               timeLeft={timeLeft}
@@ -244,6 +270,7 @@ export default function Page() {
         open={openThanksPopup}
         setOpen={setOpenThanksPopup}
       />
-    </div>
+      </div>
+    </>
   );
 }

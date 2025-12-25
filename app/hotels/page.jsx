@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   FaBed,
   FaUsers,
@@ -10,13 +11,15 @@ import {
   FaSyncAlt,
   FaBuilding,
   FaCity,
-  FaChevronDown
+  FaChevronDown,
+  FaMap
 } from 'react-icons/fa';
 import HotelCard from '@/components/Home/cards/HotelCard';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-export default function HotelPage() {
+export default function hotelPage() {
+  const router = useRouter();
   // State management
   const [filters, setFilters] = useState({
     state: '',
@@ -295,6 +298,25 @@ export default function HotelPage() {
                 </button>
               )}
             </div>
+          </div>
+
+          {/* Smart Map Search Button - Below Filters */}
+          <div className="max-w-6xl mx-auto mt-3 flex justify-center">
+            <button
+              onClick={() => {
+                const selectedArea = locations.areas.find(a => a._id === filters.area);
+                const areaName = selectedArea?.name || '';
+                if (areaName) {
+                  router.push(`/hotels/map-search?area=${encodeURIComponent(areaName)}`);
+                } else {
+                  router.push('/hotels/map-search');
+                }
+              }}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-sm md:text-base"
+            >
+              <FaMap className="text-base md:text-lg" />
+              Smart Map Search
+            </button>
           </div>
         </div>
       </section>

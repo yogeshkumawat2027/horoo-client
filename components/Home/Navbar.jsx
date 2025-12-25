@@ -16,7 +16,7 @@ import {
   FaHotel,
   FaUser,
   FaSignOutAlt,
-  FaUserFriends 
+  FaUserFriends
 } from 'react-icons/fa';
 
 export default function Navbar() {
@@ -123,14 +123,14 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* Properties Dropdown */}
+            {/* Rentals Dropdown */}
             <div className="relative group">
               <button
                 onClick={togglePropertiesDropdown}
                 onMouseEnter={() => setIsPropertiesDropdownOpen(true)}
                 className="flex items-center space-x-2 text-lg text-gray-600 hover:text-orange-600 font-semibold transition-colors duration-200"
               >
-                <span>Properties</span>
+                <span>Rentals</span>
                 <FaChevronDown className={`text-sm transition-transform duration-200 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
@@ -174,12 +174,12 @@ export default function Navbar() {
               Contact
             </Link>
 
-            {/* List Property - Simple */}
+            {/* List Rental - Simple */}
             <Link 
-              href="/listproperty"
+              href="/list-rental"
               className="text-lg text-gray-600 hover:text-orange-600 font-semibold transition-colors duration-200"
             >
-              List Property
+              List Rental
             </Link>
 
             {/* User Authentication */}
@@ -303,13 +303,13 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* Properties - Mobile */}
+            {/* Rentals - Mobile */}
             <div className="border-b border-gray-100">
               <button
                 onClick={toggleMobileProperties}
                 className="flex items-center justify-between w-full px-4 py-4 text-lg text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl font-semibold transition-all duration-200"
               >
-                <span>Properties</span>
+                <span>Rentals</span>
                 <FaChevronDown className={`text-sm transition-transform duration-200 ${isMobilePropertiesOpen ? 'rotate-180' : ''}`} />
               </button>
               
@@ -357,13 +357,13 @@ export default function Navbar() {
               Contact
             </Link>
 
-            {/* List Property - Simple Mobile */}
+            {/* List Rental - Simple Mobile */}
             <Link
-              href="/listproperty"
+              href="/list-rental"
               className="block px-4 py-4 text-lg text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl font-semibold transition-all duration-200 border-b border-gray-100"
               onClick={() => setIsMenuOpen(false)}
             >
-              List Property
+              List Rental
             </Link>
 
             {/* User Authentication - Mobile */}

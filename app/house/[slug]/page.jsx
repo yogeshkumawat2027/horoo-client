@@ -4,8 +4,10 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
-import PriceCard from '@/components/Properties/PriceCard';
-import PropertyLocation from '@/components/Properties/PropertyLocation';
+import PropertyHeader from '@/components/Properties/PropertyHeader';
+import PriceAndContact from '@/components/Properties/PriceAndContact';
+import AddressAndNearby from '@/components/Properties/AddressAndNearby';
+import MapSection from '@/components/Properties/MapSection';
 import HouseDetails from '@/components/Properties/HouseDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
@@ -139,110 +141,129 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-2 py-2">
-          <Link 
-            href="/house"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
-          >
-            <FaArrowLeft />
-            Back to Houses
-          </Link>
+    <>
+      <title>{house.horooName} - Horoo</title>
+      <div className="min-h-screen bg-gray-50">
+        {/* Back Button */}
+        <div className="bg-white border-b sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-2 py-2">
+            <Link 
+              href="/house"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
+            >
+              <FaArrowLeft />
+              Back to Houses
+            </Link>
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Images & Details */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Image Gallery */}
-            <ShowImages images={allImages} />
+        <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Images & Details */}
+            <div className="lg:col-span-2 space-y-0 bg-white">
+              {/* Image Gallery */}
+              <ShowImages images={allImages} />
 
-            {/* Property Location */}
-            <PropertyLocation
-              propertyName={house.horooName || house.propertyName}
-              area={house.area?.name}
-              city={house.city?.name}
-              state={house.state?.name}
-              pincode={house.pincode}
-              nearbyAreas={house.nearbyAreas}
-              averageRating={house.averageRating}
-              totalRatings={house.totalRatings}
-            />
+              <PropertyHeader
+                propertyName={house.horooName || house.propertyName}
+                area={house.area?.name}
+                city={house.city?.name}
+                state={house.state?.name}
+                pincode={house.pincode}
+                averageRating={house.averageRating}
+                totalRatings={house.totalRatings}
+              />
 
-            {/* Price Card - Show on mobile only */}
-            <div className="lg:hidden">
-              <PriceCard
-                horooId={house.horooId}
+              {/* Price Card - Show on mobile only */}
+              <div className="lg:hidden">
+                <PriceAndContact
+                  ownerPrice={house.ownerPrice}
+                  horooPrice={house.horooPrice}
+                  ownerMobile={house.owner?.mobile}
+                  ownerWhatsapp={house.owner?.whatsapp}
+                  priceSuffix="/month"
+                  isVerified={house.owner?.isVerified}
+                  onBookingRequest={handleBookingRequest}
+                  isButtonDisabled={isButtonDisabled}
+                  timeLeft={timeLeft}
+                />
+              </div>
+
+              {/* Property Details */}
+              <HouseDetails
+                houseType={house.houseType}
+                availableFor={house.availableFor}
+                houseSize={house.houseSize}
+                facilities={house.facilities}
+              />
+
+              <AddressAndNearby
+                horooAddress={house.horooAddress}
+                nearbyAreas={house.nearbyAreas}
+              />
+
+              <MapSection
+                latitude={house.latitude}
+                longitude={house.longitude}
+                mapLink={house.mapLink}
+                propertyName={house.horooName}
+                horooAddress={house.horooAddress}
+              />
+
+              {/* Reviews Section */}
+              <ReviewSection
+                propertyId={house._id}
+                propertyType="House"
+                averageRating={house.averageRating}
+                totalRatings={house.totalRatings}
+                reviews={house.reviews || []}
+                onReviewAdded={fetchHouseDetails}
+              />
+
+              <HouseDetails
+                description={house.description}
+                youtubeLink={house.youtubeLink}
+              />
+            </div>
+
+            {/* Right Column - Pricing & Booking (Desktop only) */}
+            <div className="hidden lg:block lg:col-span-1">
+              <PriceAndContact
                 ownerPrice={house.ownerPrice}
                 horooPrice={house.horooPrice}
-                pricePlans={house.pricePlans}
-                availability={house.availability}
+                ownerMobile={house.owner?.mobile}
+                ownerWhatsapp={house.owner?.whatsapp}
+                priceSuffix="/month"
+                isVerified={house.owner?.isVerified}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
               />
             </div>
-
-            {/* Property Details */}
-            <HouseDetails
-              houseType={house.houseType}
-              availableFor={house.availableFor}
-              houseSize={house.houseSize}
-              facilities={house.facilities}
-              description={house.description}
-              youtubeLink={house.youtubeLink}
-            />
-
-            {/* Reviews Section */}
-            <ReviewSection
-              propertyId={house._id}
-              propertyType="House"
-              averageRating={house.averageRating}
-              totalRatings={house.totalRatings}
-              reviews={house.reviews || []}
-              onReviewAdded={fetchHouseDetails}
-            />
-          </div>
-
-          {/* Right Column - Pricing & Booking (Desktop only) */}
-          <div className="hidden lg:block lg:col-span-1">
-            <PriceCard
-              horooId={house.horooId}
-              ownerPrice={house.ownerPrice}
-              horooPrice={house.horooPrice}
-              pricePlans={house.pricePlans}
-              availability={house.availability}
-              onBookingRequest={handleBookingRequest}
-              isButtonDisabled={isButtonDisabled}
-              timeLeft={timeLeft}
-            />
           </div>
         </div>
+
+        {/* Recommended Houses Section */}
+        <HouseRecommend
+          currentHorooId={house.horooId}
+          areaId={house.area?._id}
+          cityId={house.city?._id}
+        />
+
+        {/* FORM POPUP */}
+        <RequestFormPopup
+          open={openFormPopup}
+          setOpen={setOpenFormPopup}
+          horooId={house.horooId}
+          onSuccess={handleRequestSuccess}
+        />
+
+        {/* THANK YOU POPUP */}
+        <ThankYouPopup
+          open={openThanksPopup}
+          setOpen={setOpenThanksPopup}
+        />
       </div>
-
-      {/* Recommended Houses Section */}
-      <HouseRecommend
-        currentHorooId={house.horooId}
-        areaId={house.area?._id}
-        cityId={house.city?._id}
-      />
-
-      {/* FORM POPUP */}
-      <RequestFormPopup
-        open={openFormPopup}
-        setOpen={setOpenFormPopup}
-        horooId={house.horooId}
-        onSuccess={handleRequestSuccess}
-      />
-
-      {/* THANK YOU POPUP */}
-      <ThankYouPopup
-        open={openThanksPopup}
-        setOpen={setOpenThanksPopup}
-      />
-    </div>
+    </>
   );
 }

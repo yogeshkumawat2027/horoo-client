@@ -27,9 +27,10 @@ export default function PropertyDetails({
   const videoId = getYoutubeVideoId(youtubeLink);
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Hotel Details */}
-      <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+      {(roomType?.length > 0 || availableFor?.length > 0 || roomSize) && (
+      <div className="bg-white p-4 md:p-6 border-t border-gray-100">
         {/* Room Type, Available For, Room Size - All in one line */}
         <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-2">
           {/* Room Type */}
@@ -79,10 +80,11 @@ export default function PropertyDetails({
           )}
         </div>
       </div>
+      )}
 
       {/* Facilities */}
       {facilities && facilities.length > 0 && (
-        <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <div className="bg-white p-4 md:p-6 border-t border-gray-100">
           <h3 className="text-base md:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
             <FaCheckCircle className="text-green-600" />
             Facilities & Amenities
@@ -100,7 +102,7 @@ export default function PropertyDetails({
 
       {/* Description */}
       {description && (
-        <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <div className="bg-white p-4 md:p-6 border-t border-gray-100">
           <h3 className="text-base md:text-lg font-bold text-gray-800 mb-4">Description</h3>
           <div 
             className="text-sm md:text-base text-gray-600 leading-relaxed prose prose-sm max-w-none"
@@ -111,7 +113,7 @@ export default function PropertyDetails({
 
       {/* Mess Description */}
       {messDescription && (
-        <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <div className="bg-white p-4 md:p-6 border-t border-gray-100">
           <h3 className="text-base md:text-lg font-bold text-gray-800 mb-4">Mess Description</h3>
           <div 
             className="text-sm md:text-base text-gray-600 leading-relaxed prose prose-sm max-w-none"
@@ -122,7 +124,7 @@ export default function PropertyDetails({
 
       {/* YouTube Video */}
       {videoId && (
-        <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <div className="bg-white p-4 md:p-6 border-t border-gray-100">
           <h3 className="text-base md:text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
             <FaYoutube className="text-red-600" />
             Watch This Property Vlog

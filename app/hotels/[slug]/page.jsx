@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
 import PriceCardForHotel from '@/components/Properties/PriceCardForHotel';
-import PropertyLocation from '@/components/Properties/PropertyLocation';
+import PropertyHeader from '@/components/Properties/PropertyHeader';
+import PriceAndContact from '@/components/Properties/PriceAndContact';
+import AddressAndNearby from '@/components/Properties/AddressAndNearby';
+import MapSection from '@/components/Properties/MapSection';
 import HotelDetails from '@/components/Properties/HotelDetails';
 
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
@@ -137,103 +140,124 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-2 py-2">
-          <Link
-            href="/hotels"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
-          >
-            <FaArrowLeft /> Back to Hotels
-          </Link>
+    <>
+      <title>{hotel.horooName} - Horoo</title>
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white border-b sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-2 py-2">
+            <Link
+              href="/hotels"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
+            >
+              <FaArrowLeft /> Back to Hotels
+            </Link>
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          <div className="lg:col-span-2 space-y-6">
-            <ShowImages images={allImages} />
+            <div className="lg:col-span-2 space-y-0 bg-white">
+              <ShowImages images={allImages} />
 
-            <PropertyLocation
-              propertyName={hotel.horooName || hotel.propertyName}
-              area={hotel.area?.name}
-              city={hotel.city?.name}
-              state={hotel.state?.name}
-              pincode={hotel.pincode}
-              nearbyAreas={hotel.nearbyAreas}
-              averageRating={hotel.averageRating}
-              totalRatings={hotel.totalRatings}
-            />
+              <PropertyHeader
+                propertyName={hotel.horooName || hotel.propertyName}
+                area={hotel.area?.name}
+                city={hotel.city?.name}
+                state={hotel.state?.name}
+                pincode={hotel.pincode}
+                averageRating={hotel.averageRating}
+                totalRatings={hotel.totalRatings}
+              />
 
-            <div className="lg:hidden">
-              <PriceCardForHotel
+              <div className="lg:hidden">
+                <PriceAndContact
+                  horooId={hotel.horooId}
+                  ownerPrice={hotel.ownerPrice}
+                  horooPrice={hotel.horooPrice}
+                  priceSuffix={hotel.priceSuffix}
+                  isVerified={hotel.isVerified}
+                  ownerMobile={hotel.ownerMobile}
+                  ownerWhatsapp={hotel.ownerWhatsapp}
+                  onBookingRequest={handleBookingRequest}
+                  isButtonDisabled={isButtonDisabled}
+                  timeLeft={timeLeft}
+                />
+              </div>
+
+              <HotelDetails
+                roomType={hotel.roomType}
+                availableFor={hotel.availableFor}
+                roomSize={hotel.roomSize}
+                facilities={hotel.facilities}
+              />
+
+              <AddressAndNearby
+                horooAddress={hotel.horooAddress}
+                nearbyAreas={hotel.nearbyAreas}
+              />
+
+              <MapSection
+                latitude={hotel.latitude}
+                longitude={hotel.longitude}
+                mapLink={hotel.mapLink}
+                propertyName={hotel.horooName}
+                horooAddress={hotel.horooAddress}
+              />
+
+              <ReviewSection
+                propertyId={hotel._id}
+                propertyType="HotelRoom"
+                averageRating={hotel.averageRating}
+                totalRatings={hotel.totalRatings}
+                reviews={hotel.reviews || []}
+                onReviewAdded={fetchHotelDetails}
+              />
+
+              <HotelDetails
+                description={hotel.description}
+                youtubeLink={hotel.youtubeLink}
+              />
+            </div>
+
+            <div className="hidden lg:block lg:col-span-1">
+              <PriceAndContact
                 horooId={hotel.horooId}
                 ownerPrice={hotel.ownerPrice}
                 horooPrice={hotel.horooPrice}
-                pricePlans={hotel.pricePlans}
-                availability={hotel.availability}
+                priceSuffix={hotel.priceSuffix}
+                isVerified={hotel.isVerified}
+                ownerMobile={hotel.ownerMobile}
+                ownerWhatsapp={hotel.ownerWhatsapp}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
               />
             </div>
-
-            <HotelDetails
-              roomType={hotel.roomType}
-              availableFor={hotel.availableFor}
-              roomSize={hotel.roomSize}
-              facilities={hotel.facilities}
-              description={hotel.description}
-              youtubeLink={hotel.youtubeLink}
-            />
-
-            {/* Reviews Section */}
-            <ReviewSection
-              propertyId={hotel._id}
-              propertyType="HotelRoom"
-              averageRating={hotel.averageRating}
-              totalRatings={hotel.totalRatings}
-              reviews={hotel.reviews || []}
-              onReviewAdded={fetchHotelDetails}
-            />
-          </div>
-
-          <div className="hidden lg:block lg:col-span-1">
-            <PriceCardForHotel
-              horooId={hotel.horooId}
-              ownerPrice={hotel.ownerPrice}
-              horooPrice={hotel.horooPrice}
-              pricePlans={hotel.pricePlans}
-              availability={hotel.availability}
-              onBookingRequest={handleBookingRequest}
-              isButtonDisabled={isButtonDisabled}
-              timeLeft={timeLeft}
-            />
           </div>
         </div>
+
+        {/* Recommended Hotels Section */}
+        <HotelRecommend
+          currentHorooId={hotel.horooId}
+          areaId={hotel.area?._id}
+          cityId={hotel.city?._id}
+        />
+
+        {/* FORM POPUP */}
+        <RequestFormPopup
+          open={openFormPopup}
+          setOpen={setOpenFormPopup}
+          horooId={hotel.horooId}
+          onSuccess={handleRequestSuccess}
+        />
+
+        {/* THANK YOU POPUP */}
+        <ThankYouPopup
+          open={openThanksPopup}
+          setOpen={setOpenThanksPopup}
+        />
       </div>
-
-      {/* Recommended Hotels Section */}
-      <HotelRecommend
-        currentHorooId={hotel.horooId}
-        areaId={hotel.area?._id}
-        cityId={hotel.city?._id}
-      />
-
-      {/* FORM POPUP */}
-      <RequestFormPopup
-        open={openFormPopup}
-        setOpen={setOpenFormPopup}
-        horooId={hotel.horooId}
-        onSuccess={handleRequestSuccess}
-      />
-
-      {/* THANK YOU POPUP */}
-      <ThankYouPopup
-        open={openThanksPopup}
-        setOpen={setOpenThanksPopup}
-      />
-    </div>
+    </>
   );
 }

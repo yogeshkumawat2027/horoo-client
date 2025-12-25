@@ -4,9 +4,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
-import PriceCard from '@/components/Properties/PriceCard';
-import PropertyLocation from '@/components/Properties/PropertyLocation';
+import PropertyHeader from '@/components/Properties/PropertyHeader';
+import PriceAndContact from '@/components/Properties/PriceAndContact';
 import FlatDetails from '@/components/Properties/FlatDetails';
+import AddressAndNearby from '@/components/Properties/AddressAndNearby';
+import MapSection from '@/components/Properties/MapSection';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
 import FlatRecommend from "@/components/Recomended/FlatRecommend";
@@ -139,9 +141,11 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b sticky top-0 z-10">
+    <>
+      <title>{flat.horooName} - Horoo</title>
+      <div className="min-h-screen bg-gray-50">
+        {/* Back Button */}
+        <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 py-2">
           <Link 
             href="/flats"
@@ -155,31 +159,32 @@ export default function Page() {
 
       <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Images & Details */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Left Column - All Content */}
+          <div className="lg:col-span-2 space-y-0 bg-white">
             {/* Image Gallery */}
             <ShowImages images={allImages} />
 
-            {/* Property Location */}
-            <PropertyLocation
-              propertyName={flat.horooName || flat.propertyName}
+            {/* Property Header - Title, Rating, Location */}
+            <PropertyHeader
+              propertyName={flat.horooName}
               area={flat.area?.name}
               city={flat.city?.name}
               state={flat.state?.name}
               pincode={flat.pincode}
-              nearbyAreas={flat.nearbyAreas}
               averageRating={flat.averageRating}
               totalRatings={flat.totalRatings}
             />
 
             {/* Price Card - Show on mobile only */}
             <div className="lg:hidden">
-              <PriceCard
+              <PriceAndContact
                 horooId={flat.horooId}
                 ownerPrice={flat.ownerPrice}
                 horooPrice={flat.horooPrice}
-                pricePlans={flat.pricePlans}
-                availability={flat.availability}
+                priceSuffix={flat.priceSuffix}
+                isVerified={flat.isVerified}
+                ownerMobile={flat.ownerMobile}
+                ownerWhatsapp={flat.ownerWhatsapp}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
@@ -192,8 +197,21 @@ export default function Page() {
               availableFor={flat.availableFor}
               roomSize={flat.roomSize}
               facilities={flat.facilities}
-              description={flat.description}
-              youtubeLink={flat.youtubeLink}
+            />
+
+            {/* Address and Nearby Areas */}
+            <AddressAndNearby
+              horooAddress={flat.horooAddress}
+              nearbyAreas={flat.nearbyAreas}
+            />
+
+            {/* Location Map */}
+            <MapSection
+              latitude={flat.latitude}
+              longitude={flat.longitude}
+              mapLink={flat.mapLink}
+              propertyName={flat.horooName}
+              horooAddress={flat.horooAddress}
             />
 
             {/* Reviews Section */}
@@ -205,16 +223,24 @@ export default function Page() {
               reviews={flat.reviews || []}
               onReviewAdded={fetchFlatDetails}
             />
+
+            {/* Description and YouTube - After Reviews */}
+            <FlatDetails
+              description={flat.description}
+              youtubeLink={flat.youtubeLink}
+            />
           </div>
 
-          {/* Right Column - Pricing & Booking (Desktop only) */}
+          {/* Right Column - Pricing & Contact (Desktop only) */}
           <div className="hidden lg:block lg:col-span-1">
-            <PriceCard
+            <PriceAndContact
               horooId={flat.horooId}
               ownerPrice={flat.ownerPrice}
               horooPrice={flat.horooPrice}
-              pricePlans={flat.pricePlans}
-              availability={flat.availability}
+              priceSuffix={flat.priceSuffix}
+              isVerified={flat.isVerified}
+              ownerMobile={flat.ownerMobile}
+              ownerWhatsapp={flat.ownerWhatsapp}
               onBookingRequest={handleBookingRequest}
               isButtonDisabled={isButtonDisabled}
               timeLeft={timeLeft}
@@ -243,6 +269,7 @@ export default function Page() {
         open={openThanksPopup}
         setOpen={setOpenThanksPopup}
       />
-    </div>
+      </div>
+    </>
   );
 }

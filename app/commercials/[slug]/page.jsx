@@ -4,8 +4,10 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaArrowLeft, FaBed } from 'react-icons/fa';
 import ShowImages from '@/components/Properties/ShowImages';
-import PriceCard from '@/components/Properties/PriceCard';
-import PropertyLocation from '@/components/Properties/PropertyLocation';
+import PropertyHeader from '@/components/Properties/PropertyHeader';
+import PriceAndContact from '@/components/Properties/PriceAndContact';
+import AddressAndNearby from '@/components/Properties/AddressAndNearby';
+import MapSection from '@/components/Properties/MapSection';
 import CommercialDetails from '@/components/Properties/CommercialDetails';
 import RequestFormPopup from "@/components/Request/RequestFormPopup";
 import ThankYouPopup from "@/components/Request/ThankYouPopup";
@@ -139,110 +141,131 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-2 py-2">
-          <Link 
-            href="/commercials"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
-          >
-            <FaArrowLeft />
-            Back to Commercials
-          </Link>
+    <>
+      <title>{commercial.horooName} - Horoo</title>
+      <div className="min-h-screen bg-gray-50">
+        {/* Back Button */}
+        <div className="bg-white border-b sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-2 py-2">
+            <Link 
+              href="/commercials"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-orange-600 font-medium transition-colors"
+            >
+              <FaArrowLeft />
+              Back to Commercials
+            </Link>
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Images & Details */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Image Gallery */}
-            <ShowImages images={allImages} />
+        <div className="max-w-7xl mx-auto px-4 pt-2 pb-4 md:pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Images & Details */}
+            <div className="lg:col-span-2 space-y-0 bg-white">
+              {/* Image Gallery */}
+              <ShowImages images={allImages} />
 
-            {/* Property Location */}
-            <PropertyLocation
-              propertyName={commercial.horooName || commercial.propertyName}
-              area={commercial.area?.name}
-              city={commercial.city?.name}
-              state={commercial.state?.name}
-              pincode={commercial.pincode}
-              nearbyAreas={commercial.nearbyAreas}
-              averageRating={commercial.averageRating}
-              totalRatings={commercial.totalRatings}
-            />
+              <PropertyHeader
+                propertyName={commercial.horooName}
+                area={commercial.area?.name}
+                city={commercial.city?.name}
+                state={commercial.state?.name}
+                pincode={commercial.pincode}
+                averageRating={commercial.averageRating}
+                totalRatings={commercial.totalRatings}
+              />
 
-            {/* Price Card - Show on mobile only */}
-            <div className="lg:hidden">
-              <PriceCard
+              {/* Price Card - Show on mobile only */}
+              <div className="lg:hidden">
+                <PriceAndContact
+                  horooId={commercial.horooId}
+                  ownerPrice={commercial.ownerPrice}
+                  horooPrice={commercial.horooPrice}
+                  priceSuffix={commercial.priceSuffix}
+                  isVerified={commercial.isVerified}
+                  ownerMobile={commercial.ownerMobile}
+                  ownerWhatsapp={commercial.ownerWhatsapp}
+                  onBookingRequest={handleBookingRequest}
+                  isButtonDisabled={isButtonDisabled}
+                  timeLeft={timeLeft}
+                />
+              </div>
+
+              {/* Property Details */}
+              <CommercialDetails
+                commercialType={commercial.commercialType}
+                availableFor={commercial.availableFor}
+                commercialSize={commercial.commercialSize}
+                facilities={commercial.facilities}
+              />
+
+              <AddressAndNearby
+                horooAddress={commercial.horooAddress}
+                nearbyAreas={commercial.nearbyAreas}
+              />
+
+              <MapSection
+                latitude={commercial.latitude}
+                longitude={commercial.longitude}
+                mapLink={commercial.mapLink}
+                propertyName={commercial.horooName}
+                horooAddress={commercial.horooAddress}
+              />
+
+              {/* Reviews Section */}
+              <ReviewSection
+                propertyId={commercial._id}
+                propertyType="Commercial"
+                averageRating={commercial.averageRating}
+                totalRatings={commercial.totalRatings}
+                reviews={commercial.reviews || []}
+                onReviewAdded={fetchCommercialDetails}
+              />
+
+              <CommercialDetails
+                description={commercial.description}
+                youtubeLink={commercial.youtubeLink}
+              />
+            </div>
+
+            {/* Right Column - Pricing & Booking (Desktop only) */}
+            <div className="hidden lg:block lg:col-span-1">
+              <PriceAndContact
                 horooId={commercial.horooId}
                 ownerPrice={commercial.ownerPrice}
                 horooPrice={commercial.horooPrice}
-                pricePlans={commercial.pricePlans}
-                availability={commercial.availability}
+                priceSuffix={commercial.priceSuffix}
+                isVerified={commercial.isVerified}
+                ownerMobile={commercial.ownerMobile}
+                ownerWhatsapp={commercial.ownerWhatsapp}
                 onBookingRequest={handleBookingRequest}
                 isButtonDisabled={isButtonDisabled}
                 timeLeft={timeLeft}
               />
             </div>
-
-            {/* Property Details */}
-            <CommercialDetails
-              commercialType={commercial.commercialType}
-              availableFor={commercial.availableFor}
-              commercialSize={commercial.commercialSize}
-              facilities={commercial.facilities}
-              description={commercial.description}
-              youtubeLink={commercial.youtubeLink}
-            />
-
-            {/* Reviews Section */}
-            <ReviewSection
-              propertyId={commercial._id}
-              propertyType="Commercial"
-              averageRating={commercial.averageRating}
-              totalRatings={commercial.totalRatings}
-              reviews={commercial.reviews || []}
-              onReviewAdded={fetchCommercialDetails}
-            />
-          </div>
-
-          {/* Right Column - Pricing & Booking (Desktop only) */}
-          <div className="hidden lg:block lg:col-span-1">
-            <PriceCard
-              horooId={commercial.horooId}
-              ownerPrice={commercial.ownerPrice}
-              horooPrice={commercial.horooPrice}
-              pricePlans={commercial.pricePlans}
-              availability={commercial.availability}
-              onBookingRequest={handleBookingRequest}
-              isButtonDisabled={isButtonDisabled}
-              timeLeft={timeLeft}
-            />
           </div>
         </div>
+
+        {/* Recommended Commercial Properties Section */}
+        <CommercialRecommend
+          currentHorooId={commercial.horooId}
+          areaId={commercial.area?._id}
+          cityId={commercial.city?._id}
+        />
+
+        {/* FORM POPUP */}
+        <RequestFormPopup
+          open={openFormPopup}
+          setOpen={setOpenFormPopup}
+          horooId={commercial.horooId}
+          onSuccess={handleRequestSuccess}
+        />
+
+        {/* THANK YOU POPUP */}
+        <ThankYouPopup
+          open={openThanksPopup}
+          setOpen={setOpenThanksPopup}
+        />
       </div>
-
-      {/* Recommended Commercial Properties Section */}
-      <CommercialRecommend
-        currentHorooId={commercial.horooId}
-        areaId={commercial.area?._id}
-        cityId={commercial.city?._id}
-      />
-
-      {/* FORM POPUP */}
-      <RequestFormPopup
-        open={openFormPopup}
-        setOpen={setOpenFormPopup}
-        horooId={commercial.horooId}
-        onSuccess={handleRequestSuccess}
-      />
-
-      {/* THANK YOU POPUP */}
-      <ThankYouPopup
-        open={openThanksPopup}
-        setOpen={setOpenThanksPopup}
-      />
-    </div>
+    </>
   );
 }
