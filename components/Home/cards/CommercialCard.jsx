@@ -77,9 +77,6 @@ export default function CommercialCard({
             <span className="text-sm font-bold text-gray-800">
               {averageRating?.toFixed(1) || '3.5'}
             </span>
-            <span className="text-xs text-gray-500">
-              ({totalRatings || 0})
-            </span>
           </div>
         </div>
 

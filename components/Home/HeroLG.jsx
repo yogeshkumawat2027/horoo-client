@@ -59,7 +59,7 @@ export default function HeroLG() {
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-4 md:mb-6 leading-tight">
             Find Your Perfect{' '}
             <span className="text-orange-600 relative">
-              Living Space
+              Rental Space
               <div className="absolute -bottom-2 left-0 right-0 h-1 bg-orange-300 rounded-full transform scale-x-0 animate-pulse"></div>
             </span>
           </h1>

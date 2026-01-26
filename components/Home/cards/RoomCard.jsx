@@ -76,9 +76,6 @@ export default function RoomCard({
             <span className="text-xs font-bold text-gray-800">
               {averageRating?.toFixed(1) || '3.5'}
             </span>
-            <span className="text-[10px] text-gray-500">
-              ({totalRatings || 0})
-            </span>
           </div>
         </div>
 

@@ -116,12 +116,12 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
             {/* Home */}
-            <Link 
+            {/* <Link 
               href="/" 
               className="text-lg text-gray-600 hover:text-orange-600 font-semibold transition-colors duration-200"
             >
               Home
-            </Link>
+            </Link> */}
 
             {/* Rentals Dropdown */}
             <div className="relative group">
@@ -159,12 +159,12 @@ export default function Navbar() {
             </div>
 
             {/* About */}
-            <Link 
+            {/* <Link 
               href="/about" 
               className="text-lg text-gray-600 hover:text-orange-600 font-semibold transition-colors duration-200"
             >
               About
-            </Link>
+            </Link> */}
 
             {/* Contact */}
             <Link 

@@ -41,13 +41,13 @@ export default function Footer() {
     { name: 'How it Works', href: '/how-it-works' },
     { name: 'Privacy Policy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
-    { name: 'Refund Policy', href: '/refund' }
+    // { name: 'Refund Policy', href: '/refund' }
   ];
 
   const ownerLinks = [
-    { name: 'List Your Property', href: '/owner/list-property' },
-    { name: 'Owner Dashboard', href: '/owner/dashboard' },
-    { name: 'Pricing Plans', href: '/owner/pricing' },
+    { name: 'List Your Property', href: '/list-rental' },
+    // { name: 'Owner Dashboard', href: '/owner/dashboard' },
+    // { name: 'Pricing Plans', href: '/owner/pricing' },
     { name: 'Owner Guidelines', href: '/owner/guidelines' }
   ];
 

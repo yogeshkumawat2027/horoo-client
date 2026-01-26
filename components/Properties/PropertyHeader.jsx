@@ -25,9 +25,9 @@ export default function PropertyHeader({
             <span className="text-sm md:text-lg font-bold text-gray-800">
               {averageRating?.toFixed(1) || '0.0'}
             </span>
-            <span className="text-xs md:text-sm text-gray-500">
+            {/* <span className="text-xs md:text-sm text-gray-500">
               ({totalRatings || 0})
-            </span>
+            </span> */}
           </div>
         )}
       </div>
