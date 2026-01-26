@@ -56,9 +56,10 @@ export default function ProfilePage() {
 
     setSaving(true);
     const token = localStorage.getItem('userToken');
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
     try {
-      const response = await fetch(`http://localhost:5000/api/user/complete-profile/${user._id}`, {
+      const response = await fetch(`${API_URL}/user/complete-profile/${user._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

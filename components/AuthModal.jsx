@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { FaTimes, FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
 
 export default function AuthModal({ isOpen, onClose, initialTab = 'login' }) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,7 +30,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login' }) {
   if (!isOpen) return null;
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/user/auth/google';
+    window.location.href = `${API_URL}/user/auth/google`;
   };
 
   const validateLogin = () => {
@@ -87,7 +89,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login' }) {
     
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/user/login', {
+      const response = await fetch(`${API_URL}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +121,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'login' }) {
     
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/user/register', {
+      const response = await fetch(`${API_URL}/user/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

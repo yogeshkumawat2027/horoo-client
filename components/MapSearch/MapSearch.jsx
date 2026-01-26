@@ -246,7 +246,7 @@ function MapSearchContent({
         .setLngLat([property.longitude, property.latitude])
         .addTo(mapRef.current);
 
-      markersRef.current.push(marker);
+      markersRef.current.push(marker);  
     });
 
     // Fit bounds to show all properties

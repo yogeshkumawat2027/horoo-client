@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function LoginPopup({ isOpen, onClose, onSwitchToSignup }) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -38,7 +40,7 @@ export default function LoginPopup({ isOpen, onClose, onSwitchToSignup }) {
     
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/user/login', {
+      const response = await fetch(`${API_URL}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,459 +1,374 @@
 "use client";
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { FaTimes, FaEye, FaEyeSlash, FaPhone, FaWhatsapp } from 'react-icons/fa';
+import { FaHome, FaBed, FaBuilding, FaHotel, FaWarehouse, FaUserFriends, FaPhone, FaWhatsapp, FaEnvelope, FaCheckCircle } from 'react-icons/fa';
+
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function ListRentalPage() {
-  const router = useRouter();
-  const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  
-  const [registerData, setRegisterData] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     address: '',
-    password: '',
-    confirmPassword: ''
+    propertyType: ''
   });
 
-  const [loginData, setLoginData] = useState({
-    mobile: '',
-    password: ''
-  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  const [errors, setErrors] = useState({});
+  const propertyTypes = [
+    { value: 'room', label: 'Room', icon: FaBed },
+    { value: 'flat', label: 'Flat', icon: FaBuilding },
+    { value: 'hostel', label: 'Hostel', icon: FaUserFriends },
+    { value: 'hotel', label: 'Hotel', icon: FaHotel },
+    { value: 'house', label: 'House', icon: FaHome },
+    { value: 'commercial', label: 'Commercial', icon: FaWarehouse }
+  ];
 
-  const handleRegisterClick = () => {
-    setShowRegisterForm(true);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError('');
   };
 
-  const handleDashboardClick = () => {
-    // Check if owner data exists in localStorage
-    const ownerData = localStorage.getItem('ownerToken');
-    
-    if (ownerData) {
-      router.push('/owner-dashboard');
-    } else {
-      setShowLoginForm(true);
-      setShowRegisterForm(false);
-    }
+  const handlePropertyTypeSelect = (type) => {
+    setFormData(prev => ({
+      ...prev,
+      propertyType: type
+    }));
+    setError('');
   };
 
-  const validateRegister = () => {
-    const newErrors = {};
-    
-    if (!registerData.name.trim()) {
-      newErrors.name = 'Name is required';
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      setError('Please enter your name');
+      return false;
     }
-    
-    if (!registerData.mobile) {
-      newErrors.mobile = 'Mobile number is required';
-    } else if (!/^[0-9]{10}$/.test(registerData.mobile)) {
-      newErrors.mobile = 'Please enter a valid 10-digit mobile number';
+    if (!formData.mobile.match(/^[0-9]{10}$/)) {
+      setError('Please enter a valid 10-digit mobile number');
+      return false;
     }
-    
-    if (!registerData.address.trim()) {
-      newErrors.address = 'Address is required';
+    if (!formData.address.trim()) {
+      setError('Please enter property address');
+      return false;
     }
-    
-    if (!registerData.password) {
-      newErrors.password = 'Password is required';
-    } else if (registerData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters long';
+    if (!formData.propertyType) {
+      setError('Please select a property type');
+      return false;
     }
-    
-    if (!registerData.confirmPassword) {
-      newErrors.confirmPassword = 'Confirm password is required';
-    } else if (registerData.password !== registerData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
-  const handleRegisterSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateRegister()) return;
     
+    if (!validateForm()) return;
+
     setLoading(true);
+    setError('');
+
     try {
-      const response = await fetch('http://localhost:5000/api/owner/register', {
+      const response = await fetch(`${API}/listing-requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: registerData.name,
-          email: `${registerData.mobile}@horoo.com`, // Generate a dummy email
-          mobile: registerData.mobile,
-          address: registerData.address,
-          password: registerData.password,
-          confirmPassword: registerData.confirmPassword
-        }),
+        body: JSON.stringify(formData)
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        // Save token to localStorage
-        localStorage.setItem('ownerToken', data.token);
-        localStorage.setItem('ownerData', JSON.stringify(data.data || data.owner));
+      if (data.success) {
+        setSuccess(true);
+        setFormData({
+          name: '',
+          mobile: '',
+          address: '',
+          propertyType: ''
+        });
         
-        alert('Registration successful!');
-        router.push('/owner-dashboard');
+        // Auto-hide success message after 8 seconds
+        setTimeout(() => setSuccess(false), 8000);
       } else {
-        alert(data.message || 'Registration failed');
+        setError(data.message || 'Failed to submit request. Please try again.');
       }
-    } catch (error) {
-      console.error('Registration error:', error);
-      alert('An error occurred during registration');
+    } catch (err) {
+      setError('Something went wrong. Please try again later.');
+      console.error('Error submitting listing request:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const validateLogin = () => {
-    const newErrors = {};
-    
-    if (!loginData.mobile) {
-      newErrors.mobile = 'Mobile number is required';
-    } else if (!/^[0-9]{10}$/.test(loginData.mobile)) {
-      newErrors.mobile = 'Please enter a valid 10-digit mobile number';
-    }
-    
-    if (!loginData.password) {
-      newErrors.password = 'Password is required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleWhatsApp = () => {
+    const phoneNumber = "+919166260477";
+    window.open(`https://wa.me/${phoneNumber}`, '_blank');
   };
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateLogin()) return;
-    
-    setLoading(true);
-    try {
-      const response = await fetch('http://localhost:5000/api/owner/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          emailOrMobile: loginData.mobile,
-          password: loginData.password
-        }),
-      });
+  const handleCall = () => {
+    window.location.href = "tel:+919166260477";
+  };
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // Save token to localStorage
-        localStorage.setItem('ownerToken', data.token);
-        localStorage.setItem('ownerData', JSON.stringify(data.data || data.owner));
-        
-        setShowLoginForm(false);
-        router.push('/owner-dashboard');
-      } else {
-        alert(data.message || 'Login failed');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('An error occurred during login');
-    } finally {
-      setLoading(false);
-    }
+  const handleEmail = () => {
+    window.location.href = "mailto:support@horoo.in";
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            List Your Rental Property
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-3 md:mb-4">
+            List Your Property with{' '}
+            <span className="text-orange-600">Horoo</span>
           </h1>
-          <p className="text-lg text-gray-600">
-            Start earning by listing your property with us
+          <p className="hidden md:block text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Connect with thousands of potential tenants. List your property today and start earning rental income effortlessly.
           </p>
+          <div className="mt-4 md:mt-6 flex flex-wrap justify-center gap-4 text-sm text-gray-700">
+            <div className="flex items-center gap-2">
+              <FaCheckCircle className="text-orange-600" />
+              <span>Quick Listing</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaCheckCircle className="text-orange-600" />
+              <span>Wide Reach</span>
+            </div>
+          </div>
         </div>
 
-        {/* Main Content */}
-        {!showRegisterForm && !showLoginForm ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Left side - Main buttons */}
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <div className="space-y-4">
-                <button
-                  onClick={handleRegisterClick}
-                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg"
-                >
-                  Register Now to List Rental
-                </button>
-                
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">OR</span>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Form Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl shadow-xl p-4 md:p-8 border border-gray-200">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
+                <FaHome className="text-orange-600" />
+                Property Listing Request
+              </h2>
+
+              {success && (
+                <div className="mb-4 md:mb-6 bg-green-50 border-2 border-green-500 text-green-800 px-5 py-4 rounded-lg shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <FaCheckCircle className="text-green-600 text-2xl flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-lg mb-1">Your request is sent!</p>
+                      <p className="text-sm text-green-700">Our team will connect with you soon.</p>
+                    </div>
                   </div>
                 </div>
-                
+              )}
+
+              {error && (
+                <div className="mb-4 md:mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit}>
+                {/* Name Field */}
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-gray-700 font-semibold mb-2 text-sm md:text-base">
+                    Your Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your full name"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition placeholder:text-gray-400"
+                    required
+                  />
+                </div>
+
+                {/* Mobile Field */}
+                <div className="mb-4">
+                  <label htmlFor="mobile" className="block text-gray-700 font-semibold mb-2 text-sm md:text-base">
+                    Mobile Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="mobile"
+                    name="mobile"
+                    value={formData.mobile}
+                    onChange={handleChange}
+                    placeholder="10-digit mobile number"
+                    pattern="[0-9]{10}"
+                    maxLength="10"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition placeholder:text-gray-400"
+                    required
+                  />
+                </div>
+
+                {/* Address Field */}
+                <div className="mb-4">
+                  <label htmlFor="address" className="block text-gray-700 font-semibold mb-2 text-sm md:text-base">
+                    Property Address <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Enter complete property address"
+                    rows="3"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition resize-none placeholder:text-gray-400"
+                    required
+                  />
+                </div>
+
+                {/* Property Type Selection */}
+                <div className="mb-6">
+                  <label className="block text-gray-700 font-semibold mb-3 text-sm md:text-base">
+                    Property Type <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {propertyTypes.map((type) => {
+                      const IconComponent = type.icon;
+                      return (
+                        <label
+                          key={type.value}
+                          className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                            formData.propertyType === type.value
+                              ? 'border-orange-600 bg-orange-50 text-orange-600'
+                              : 'border-gray-300 hover:border-orange-400 text-gray-700'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="propertyType"
+                            value={type.value}
+                            checked={formData.propertyType === type.value}
+                            onChange={(e) => handlePropertyTypeSelect(e.target.value)}
+                            className="w-5 h-5 text-orange-600 focus:ring-orange-500"
+                          />
+                          <IconComponent className="text-xl" />
+                          <span className="font-medium text-sm flex-1">{type.label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Submit Button */}
                 <button
-                  onClick={handleDashboardClick}
-                  className="w-full bg-white border-2 border-orange-600 text-orange-600 py-4 rounded-lg font-semibold text-lg hover:bg-orange-50 transition duration-200"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 md:py-4 px-6 rounded-lg transition duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-base md:text-lg"
                 >
-                  Go to Dashboard
+                  {loading ? 'Submitting...' : 'Submit Listing Request'}
                 </button>
+              </form>
+
+              <div className="mt-4 md:mt-6 text-center text-xs md:text-sm text-gray-600">
+                By submitting, you agree to our terms and conditions
               </div>
-              
-              <p className="mt-6 text-center text-sm text-gray-600">
-                Already have an account? Click "Go to Dashboard" to login
-              </p>
             </div>
+          </div>
 
-            {/* Right side - Support Section */}
-            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl shadow-xl p-8 border border-gray-200">
+          {/* Support Card Section */}
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-xl p-6 border border-orange-200 sticky top-4">
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Need Help?</h3>
-                <p className="text-gray-600">Contact our support team</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Need Help?</h3>
+                <p className="text-gray-600">Our team is here to assist you</p>
               </div>
 
-              {/* Phone Number Display */}
-              <div className="bg-white rounded-lg p-4 mb-6 text-center shadow-sm">
-                <div className="flex items-center justify-center space-x-2 text-xl font-semibold text-gray-800">
-                  <FaPhone className="text-orange-600" />
-                  <span>+91 9166260477</span>
+              {/* Contact Information */}
+              <div className="space-y-4 mb-6">
+                {/* Phone Number */}
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="flex items-center gap-3 text-gray-800">
+                    <FaPhone className="text-orange-600 text-xl" />
+                    <div>
+                      <p className="text-xs text-gray-500 font-medium">Phone Number</p>
+                      <p className="font-semibold text-lg">+91 9166260477</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="flex items-center gap-3 text-gray-800">
+                    <FaEnvelope className="text-orange-600 text-xl" />
+                    <div>
+                      <p className="text-xs text-gray-500 font-medium">Email</p>
+                      <p className="font-semibold">support@horoo.in</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-3">
-                {/* Call Button */}
-                <a
-                  href="tel:+919166260477"
-                  className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                <button
+                  onClick={handleCall}
+                  className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-3 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
                 >
                   <FaPhone size={18} />
-                  <span>Call</span>
-                </a>
+                  <span>Call Now</span>
+                </button>
 
-                {/* WhatsApp Button */}
-                <a
-                  href="https://wa.me/919166260477"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+                <button
+                  onClick={handleWhatsApp}
+                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-3 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
                 >
                   <FaWhatsapp size={20} />
                   <span>WhatsApp</span>
-                </a>
+                </button>
               </div>
 
               {/* Additional Info */}
-              <div className="mt-6 p-4 bg-white rounded-lg shadow-sm">
-                <p className="text-sm text-gray-600 text-center">
-                  Available 24/7 to assist you with property listing
+              <div className="mt-6 pt-6 border-t border-orange-200">
+                <p className="text-sm text-gray-700 text-center">
+                  <span className="font-semibold text-orange-600">Available:</span> Monday - Saturday
+                  <br />
+                  9:00 AM - 8:00 PM
                 </p>
               </div>
             </div>
           </div>
-        ) : showRegisterForm ? (
-          /* Registration Form */
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Owner Registration</h2>
-              <button
-                onClick={() => setShowRegisterForm(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <FaTimes size={24} />
-              </button>
+        </div>
+
+        {/* Why List With Us Section */}
+        <div className="mt-16 bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+            Why List Your Property with Horoo?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaUserFriends className="text-orange-600 text-3xl" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Wide Audience</h3>
+              <p className="text-gray-600">
+                Reach thousands of verified tenants actively searching for properties
+              </p>
             </div>
-            
-            <form onSubmit={handleRegisterSubmit} className="space-y-6">
-              {/* Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={registerData.name}
-                  onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                  placeholder="Enter your full name"
-                />
-                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+            <div className="text-center">
+              <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaCheckCircle className="text-orange-600 text-3xl" />
               </div>
-
-              {/* Mobile */}
-              <div>
-                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Number *
-                </label>
-                <input
-                  type="tel"
-                  id="mobile"
-                  value={registerData.mobile}
-                  onChange={(e) => setRegisterData({ ...registerData, mobile: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                  placeholder="Enter 10-digit mobile number"
-                  maxLength="10"
-                />
-                {errors.mobile && <p className="mt-1 text-sm text-red-600">{errors.mobile}</p>}
-              </div>
-
-              {/* Address */}
-              <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-                  Address *
-                </label>
-                <textarea
-                  id="address"
-                  value={registerData.address}
-                  onChange={(e) => setRegisterData({ ...registerData, address: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                  placeholder="Enter your complete address"
-                  rows="3"
-                />
-                {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
-              </div>
-
-              {/* Password */}
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password *
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    value={registerData.password}
-                    onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pr-12 text-gray-900"
-                    placeholder="Enter password (min 6 characters)"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-                  </button>
-                </div>
-                {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-              </div>
-
-              {/* Confirm Password */}
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password *
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirmPassword"
-                    value={registerData.confirmPassword}
-                    onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pr-12 text-gray-900"
-                    placeholder="Re-enter password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showConfirmPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-                  </button>
-                </div>
-                {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Registering...' : 'Register as Owner'}
-              </button>
-            </form>
-          </div>
-        ) : (
-          /* Login Form */
-          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Owner Login</h2>
-              <button
-                onClick={() => setShowLoginForm(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <FaTimes size={24} />
-              </button>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Easy Process</h3>
+              <p className="text-gray-600">
+                Simple listing process with our team handling all the details
+              </p>
             </div>
-            
-            <form onSubmit={handleLoginSubmit} className="space-y-6">
-              {/* Mobile */}
-              <div>
-                <label htmlFor="loginMobile" className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  id="loginMobile"
-                  value={loginData.mobile}
-                  onChange={(e) => setLoginData({ ...loginData, mobile: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900"
-                  placeholder="Enter your mobile number"
-                  maxLength="10"
-                />
-                {errors.mobile && <p className="mt-1 text-sm text-red-600">{errors.mobile}</p>}
+            <div className="text-center">
+              <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaHome className="text-orange-600 text-3xl" />
               </div>
-
-              {/* Password */}
-              <div>
-                <label htmlFor="loginPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="loginPassword"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent pr-12 text-gray-900"
-                    placeholder="Enter your password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-                  </button>
-                </div>
-                {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-700 hover:to-red-700 transition duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Logging in...' : 'Login'}
-              </button>
-            </form>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Quick Support</h3>
+              <p className="text-gray-600">
+                Get dedicated support from our team throughout the listing process
+              </p>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

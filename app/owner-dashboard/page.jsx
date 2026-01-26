@@ -45,14 +45,15 @@ export default function OwnerDashboardPage() {
 
   const fetchOwnerListings = async (mobile) => {
     setLoading(true);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
     try {
       const [flatsRes, roomsRes, commercialsRes, housesRes, hostelsRes, hotelRoomsRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/flats?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
-        fetch(`http://localhost:5000/api/rooms?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
-        fetch(`http://localhost:5000/api/commercials?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
-        fetch(`http://localhost:5000/api/houses?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
-        fetch(`http://localhost:5000/api/hostels?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
-        fetch(`http://localhost:5000/api/hotel-rooms?ownerMobile=${mobile}`).catch(() => ({ ok: false }))
+        fetch(`${API_URL}/flats?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
+        fetch(`${API_URL}/rooms?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
+        fetch(`${API_URL}/commercials?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
+        fetch(`${API_URL}/houses?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
+        fetch(`${API_URL}/hostels?ownerMobile=${mobile}`).catch(() => ({ ok: false })),
+        fetch(`${API_URL}/hotel-rooms?ownerMobile=${mobile}`).catch(() => ({ ok: false }))
       ]);
 
       const newListings = {
