@@ -2,8 +2,8 @@
 import { FaPhone, FaWhatsapp } from 'react-icons/fa';
 
 export default function Support() {
-  const phoneNumber = "+919166260477";
-  const displayNumber = "+91 9166260477";
+  const phoneNumber = "+918279053200";
+  const displayNumber = "+91 8279053200";
 
   const handleCall = () => {
     window.location.href = `tel:${phoneNumber}`;

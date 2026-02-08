@@ -7,8 +7,8 @@ export default function ContactPage() {
     {
       icon: FaPhone,
       title: "Phone",
-      details: "+91 9166260477",
-      link: "tel:+919166260477",
+      details: "+91 8279053200",
+      link: "tel:+918279053200",
       color: "text-blue-600",
       bgColor: "bg-blue-100"
     },
@@ -23,8 +23,8 @@ export default function ContactPage() {
     {
       icon: FaWhatsapp,
       title: "WhatsApp",
-      details: "+91 9166260477",
-      link: "https://wa.me/919166260477",
+      details: "+91 8279053200",
+      link: "https://wa.me/918279053200",
       color: "text-green-600",
       bgColor: "bg-green-100"
     },

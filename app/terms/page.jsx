@@ -289,7 +289,7 @@ export default function TermsOfServicePage() {
             </p>
             <div className="space-y-2">
               <p><strong>Email:</strong> <a href="mailto:support@horoo.com" className="hover:underline">support@horoo.com</a></p>
-              <p><strong>Phone:</strong> <a href="tel:+919166260477" className="hover:underline">+91 9166260477</a></p>
+              <p><strong>Phone:</strong> <a href="tel:+918279053200" className="hover:underline">+91 8279053200</a></p>
               <p><strong>Address:</strong> 123 Business Park, Sector 44, Gurgaon, Haryana 122003</p>
             </div>
           </div>

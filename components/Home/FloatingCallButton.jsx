@@ -33,7 +33,7 @@ export default function FloatingCallButton() {
   return (
     <div className="fixed bottom-20 right-6 z-50 md:hidden">
       <a
-        href="tel:+919166260477"
+        href="tel:+918279053200"
         className={`
           flex items-center justify-center
           transition-all duration-700 ease-out transform

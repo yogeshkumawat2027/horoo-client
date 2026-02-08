@@ -323,7 +323,7 @@ export default function OwnerGuidelinesPage() {
             </ul>
             <div className="space-y-2 border-t border-orange-500 pt-4 mt-4">
               <p><strong>Email:</strong> <a href="mailto:support@horoo.com" className="hover:underline">support@horoo.com</a></p>
-              <p><strong>Phone:</strong> <a href="tel:+919166260477" className="hover:underline">+91 9166260477</a></p>
+              <p><strong>Phone:</strong> <a href="tel:+918279053200" className="hover:underline">+91 8279053200</a></p>
             </div>
           </div>
 

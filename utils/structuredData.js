@@ -16,7 +16,7 @@ export function generateOrganizationSchema() {
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+91-9166260477',
+      telephone: '+91-8279053200',
       contactType: 'Customer Service',
       email: 'support@horoo.com',
       availableLanguage: ['English', 'Hindi'],

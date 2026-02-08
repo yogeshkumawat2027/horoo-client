@@ -104,16 +104,16 @@ export default function ListRentalPage() {
   };
 
   const handleWhatsApp = () => {
-    const phoneNumber = "+919166260477";
+    const phoneNumber = "+918279053200";
     window.open(`https://wa.me/${phoneNumber}`, '_blank');
   };
 
   const handleCall = () => {
-    window.location.href = "tel:+919166260477";
+    window.location.href = "tel:+918279053200";
   };
 
   const handleEmail = () => {
-    window.location.href = "mailto:support@horoo.in";
+    window.location.href = "mailto:horoobooking@gmail.com";
   };
 
   return (
@@ -286,7 +286,7 @@ export default function ListRentalPage() {
                     <FaPhone className="text-orange-600 text-xl" />
                     <div>
                       <p className="text-xs text-gray-500 font-medium">Phone Number</p>
-                      <p className="font-semibold text-lg">+91 9166260477</p>
+                      <p className="font-semibold text-lg">+91 8279053200</p>
                     </div>
                   </div>
                 </div>
@@ -297,7 +297,7 @@ export default function ListRentalPage() {
                     <FaEnvelope className="text-orange-600 text-xl" />
                     <div>
                       <p className="text-xs text-gray-500 font-medium">Email</p>
-                      <p className="font-semibold">support@horoo.in</p>
+                      <p className="font-semibold">horoobooking@gmail.com</p>
                     </div>
                   </div>
                 </div>

@@ -357,7 +357,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Phone Support</h3>
                 <p className="text-gray-600 mb-2">Call us anytime</p>
-                <p className="text-2xl font-bold text-orange-600">+91 9166260477</p>
+                <p className="text-2xl font-bold text-orange-600">+91 8279053200</p>
               </div>
 
               <div className="text-center group">
@@ -366,7 +366,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Email Us</h3>
                 <p className="text-gray-600 mb-2">Quick response guaranteed</p>
-                <p className="text-lg font-bold text-orange-600">support@horoo.in</p>
+                <p className="text-lg font-bold text-orange-600">horoobooking@gmail.com</p>
               </div>
 
               <div className="text-center group">

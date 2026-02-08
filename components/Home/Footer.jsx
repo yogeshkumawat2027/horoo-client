@@ -86,21 +86,20 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <FaPhone className="text-orange-500 flex-shrink-0" />
-                <a href="tel:+919166260477" className="text-gray-300 hover:text-white transition-colors">
-                  +91 9166260477
+                <a href="tel:+918279053200" className="text-gray-300 hover:text-white transition-colors">
+                  +91 8279053200
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <FaEnvelope className="text-orange-500 flex-shrink-0" />
-                <a href="mailto:support@horoo.com" className="text-gray-300 hover:text-white transition-colors">
-                  support@horoo.com
+                <a href="mailto:horoobooking@gmail.com" className="text-gray-300 hover:text-white transition-colors">
+                  horoobooking@gmail.com
                 </a>
               </div>
               <div className="flex items-start gap-3">
                 <FaMapMarkerAlt className="text-orange-500 flex-shrink-0 mt-1" />
                 <span className="text-gray-300 text-sm">
-                  123 Business Park, Sector 44,<br />
-                  Gurgaon, Haryana 122003
+                  Kota , Rajasthan - 324010
                 </span>
               </div>
             </div>
@@ -204,7 +203,7 @@ export default function Footer() {
                 <FaLinkedin className="text-lg" />
               </a>
               <a 
-                href="https://wa.me/919166260477" 
+                href="https://wa.me/918279053200" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="bg-gray-800 hover:bg-green-500 p-3 rounded-full transition-all duration-300 transform hover:scale-110"
@@ -218,7 +217,7 @@ export default function Footer() {
               <h4 className="text-white font-semibold mb-2">Quick Contact</h4>
               <p className="text-gray-300 text-sm mb-2">Need immediate assistance?</p>
               <a 
-                href="tel:+919166260477" 
+                href="tel:+918279053200" 
                 className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
               >
                 <FaPhone className="text-xs" />
