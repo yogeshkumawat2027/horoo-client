@@ -181,7 +181,7 @@ export default function PriceAndContact({
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
       >
-        {isButtonDisabled ? 'Request Already Sent' : 'Request to Book Now'}
+        {isButtonDisabled ? 'Request Already Sent' : 'Enuiry Now'}
       </button>
     </div>
   );

@@ -102,7 +102,7 @@ export default function PriceCard({
           }`}
       >
         <FaCalendarCheck />
-        {isButtonDisabled ? 'Request Already Sent' : 'Request to Book Now'}
+        {isButtonDisabled ? 'Request Already Sent' : 'Book Now'}
       </button>
 
       {/* Timer Message */}

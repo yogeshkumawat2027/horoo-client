@@ -288,9 +288,9 @@ export default function TermsOfServicePage() {
               If you have any questions or concerns about these Terms of Service, please contact us:
             </p>
             <div className="space-y-2">
-              <p><strong>Email:</strong> <a href="mailto:support@horoo.com" className="hover:underline">support@horoo.com</a></p>
+              <p><strong>Email:</strong> <a href="mailto:support@horoo.com" className="hover:underline">horoobooking@gmail.com</a></p>
               <p><strong>Phone:</strong> <a href="tel:+918279053200" className="hover:underline">+91 8279053200</a></p>
-              <p><strong>Address:</strong> 123 Business Park, Sector 44, Gurgaon, Haryana 122003</p>
+              <p><strong>Address:</strong> kota , Rajasthan</p>
             </div>
           </div>
 
