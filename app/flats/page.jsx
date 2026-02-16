@@ -123,7 +123,12 @@ export default function FlatPage() {
       const data = await res.json();
       
       if (data.success) {
-        setFlats(data.flats || []);
+        const sortedFlats = (data.flats || []).sort((a, b) => {
+          const ratingA = a.averageRating || 0;
+          const ratingB = b.averageRating || 0;
+          return ratingB - ratingA;
+        });
+        setFlats(sortedFlats);
       }
     } catch (error) {
       console.error('Error fetching flats:', error);

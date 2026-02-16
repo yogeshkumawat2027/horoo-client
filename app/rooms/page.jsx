@@ -123,7 +123,12 @@ export default function RoomPage() {
       const data = await res.json();
       
       if (data.success) {
-        setRooms(data.rooms || []);
+        const sortedRooms = (data.rooms || []).sort((a, b) => {
+          const ratingA = a.averageRating || 0;
+          const ratingB = b.averageRating || 0;
+          return ratingB - ratingA;
+        });
+        setRooms(sortedRooms);
       }
     } catch (error) {
       console.error('Error fetching rooms:', error);

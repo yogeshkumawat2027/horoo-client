@@ -106,7 +106,12 @@ export default function commercialPage() {
       const data = await res.json();
       
       if (data.success) {
-        setCommercials(data.commercials || []);
+        const sortedCommercials = (data.commercials || []).sort((a, b) => {
+          const ratingA = a.averageRating || 0;
+          const ratingB = b.averageRating || 0;
+          return ratingB - ratingA;
+        });
+        setCommercials(sortedCommercials);
       }
     } catch (error) {
       console.error('Error fetching commercials:', error);

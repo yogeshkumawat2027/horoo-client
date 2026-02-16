@@ -123,7 +123,12 @@ export default function hotelPage() {
       const data = await res.json();
       
       if (data.success) {
-        setHotels(data.hotelRooms || []);
+        const sortedHotels = (data.hotelRooms || []).sort((a, b) => {
+          const ratingA = a.averageRating || 0;
+          const ratingB = b.averageRating || 0;
+          return ratingB - ratingA;
+        });
+        setHotels(sortedHotels);
       }
     } catch (error) {
       console.error('Error fetching hotels:', error);

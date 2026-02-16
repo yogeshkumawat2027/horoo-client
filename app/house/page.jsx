@@ -123,7 +123,12 @@ export default function housePage() {
       const data = await res.json();
       
       if (data.success) {
-        setHouses(data.houses || []);
+        const sortedHouses = (data.houses || []).sort((a, b) => {
+          const ratingA = a.averageRating || 0;
+          const ratingB = b.averageRating || 0;
+          return ratingB - ratingA;
+        });
+        setHouses(sortedHouses);
       }
     } catch (error) {
       console.error('Error fetching houses:', error);
