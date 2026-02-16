@@ -231,7 +231,7 @@ function MapSearchContent({
           <div style="font-size: 13px; font-weight: 700; color: #ea580c; margin-bottom: 6px; line-height: 1.3;">${property.horooName}</div>
           <div style="font-size: 11px; color: #6b7280; margin-bottom: 6px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${addressText}</div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
-            <div style="font-size: 15px; font-weight: 700; color: #ea580c;">₹${property.horooPrice?.toLocaleString()}<span style="font-size: 10px; font-weight: 500; color: #6b7280;">/mo</span></div>
+            <div style="font-size: 15px; font-weight: 700; color: #ea580c;">₹${(property.ownerPrice || property.horooPrice)?.toLocaleString()}<span style="font-size: 10px; font-weight: 500; color: #6b7280;">/mo</span></div>
             ${distanceText ? `<div style="font-size: 11px; color: #059669; font-weight: 600; background: #d1fae5; padding: 3px 8px; border-radius: 6px;">${distanceText}</div>` : ''}
           </div>
         </div>
