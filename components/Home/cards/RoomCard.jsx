@@ -15,7 +15,8 @@ export default function RoomCard({
   horooPrice,
   mainImage,
   averageRating = 3.5,
-  totalRatings = 0
+  totalRatings = 0,
+  redirectUrl
 }) {
   // Format room types for display
   const formatRoomTypes = (types) => {
@@ -46,10 +47,11 @@ export default function RoomCard({
 
   // Use slug if available, otherwise fall back to horooId
   const urlSlug = slug || horooId;
+  const linkUrl = redirectUrl || `/rooms/${urlSlug}`;
 
   return (
     <Link 
-      href={`/rooms/${urlSlug}`}
+      href={linkUrl}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">

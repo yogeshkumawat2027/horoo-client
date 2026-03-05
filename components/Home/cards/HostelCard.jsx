@@ -16,10 +16,12 @@ export default function HostelCard({
   roomSize,
   slug,
   averageRating = 3.5,
-  totalRatings = 0
+  totalRatings = 0,
+  redirectUrl
 }) {
   // Use slug if available, fallback to horooId for backward compatibility
   const urlSlug = slug || horooId;
+  const linkUrl = redirectUrl || `/hostels/${urlSlug}`;
 
   // Format room types for display
   const formatRoomTypes = (types) => {
@@ -50,7 +52,7 @@ export default function HostelCard({
 
   return (
     <Link 
-      href={`/hostels/${urlSlug}`}
+      href={linkUrl}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">

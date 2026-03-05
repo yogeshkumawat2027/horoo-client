@@ -135,7 +135,7 @@ export default function CommercialSection() {
           <div className="scroll-container flex overflow-x-auto gap-4 pb-4 pl-4 pr-16">
             {commercials.slice(0, 4).map((commercial, index) => (
               <div key={commercial.horooId || index} className="flex-shrink-0" style={{width: '75vw'}}>
-                <CommercialCard {...commercial} />
+                <CommercialCard {...commercial} redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota" />
               </div>
             ))}
             
@@ -149,6 +149,7 @@ export default function CommercialSection() {
             <CommercialCard
               key={commercial.horooId || index}
               {...commercial}
+              redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota"
             />
           ))}
         </div>

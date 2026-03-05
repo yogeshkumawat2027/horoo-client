@@ -17,7 +17,8 @@ export default function FlatCard({
   roomType = [],
   roomSize,
   averageRating = 3.5,
-  totalRatings = 0
+  totalRatings = 0,
+  redirectUrl
 }) {
   // Format flat types for display
   const formatFlatTypes = (types) => {
@@ -54,6 +55,7 @@ export default function FlatCard({
 
   // Use slug if available, otherwise fall back to horooId
   const urlSlug = slug || horooId;
+  const linkUrl = redirectUrl || `/flats/${urlSlug}`;
   
   // Debug log to check what values we're receiving
   if (!slug) {
@@ -62,7 +64,7 @@ export default function FlatCard({
 
   return (
     <Link 
-      href={`/flats/${urlSlug}`}
+      href={linkUrl}
       className="block w-full"
     >
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 hover:border-orange-200 cursor-pointer">

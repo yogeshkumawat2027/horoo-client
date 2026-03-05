@@ -133,7 +133,7 @@ export default function HostelSection() {
           <div className="scroll-container flex overflow-x-auto gap-4 pb-4 pl-4 pr-16">
             {hostels.slice(0, 4).map((hostel, index) => (
               <div key={hostel.horooId || index} className="flex-shrink-0" style={{width: '75vw'}}>
-                <HostelCard {...hostel} />
+                <HostelCard {...hostel} redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota" />
               </div>
             ))}
             
@@ -164,6 +164,7 @@ export default function HostelSection() {
             <HostelCard
               key={hostel.horooId || index}
               {...hostel}
+              redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota"
             />
           ))}
         </div>

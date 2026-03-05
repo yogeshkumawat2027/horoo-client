@@ -135,7 +135,7 @@ export default function RoomSection() {
           <div className="scroll-container flex overflow-x-auto gap-4 pb-4 pl-4 pr-16">
             {rooms.slice(0, 4).map((room, index) => (
               <div key={room.horooId || index} className="flex-shrink-0" style={{width: '75vw'}}>
-                <RoomCard {...room} />
+                <RoomCard {...room} redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota" />
               </div>
             ))}
             
@@ -149,6 +149,7 @@ export default function RoomSection() {
             <RoomCard
               key={room.horooId || index}
               {...room}
+              redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota"
             />
           ))}
         </div>

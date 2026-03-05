@@ -143,7 +143,7 @@ export default function FlatSection() {
           <div className="scroll-container flex overflow-x-auto gap-4 pb-4 pl-4 pr-16">
             {flats.slice(0, 4).map((flat, index) => (
               <div key={flat.horooId || index} className="flex-shrink-0" style={{width: '75vw'}}>
-                <FlatCard {...flat} />
+                <FlatCard {...flat} redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota" />
               </div>
             ))}
             
@@ -157,6 +157,7 @@ export default function FlatSection() {
             <FlatCard
               key={flat.horooId || index}
               {...flat}
+              redirectUrl="https://www.horoo.in/flats/neelkanth-residency-apartments-2bhk-flats-int-kota"
             />
           ))}
         </div>
